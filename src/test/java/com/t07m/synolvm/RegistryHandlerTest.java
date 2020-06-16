@@ -31,7 +31,7 @@ class RegistryHandlerTest {
 		values.add("WinGeometry");
 		values.add("WinStates");
 		values.add("DisplayZoom");
-		RegistryHandler handler = new RegistryHandler(new File("WindowsRegistry.exe"));
+		RegistryHandler handler = new RegistryHandler(new File("lib/WindowsRegistry.exe"));
 		Map<String, Object> exported = handler.getValues(values);
 		assert(handler.setValues(exported));
 	}
