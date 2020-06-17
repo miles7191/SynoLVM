@@ -19,16 +19,18 @@ import java.io.File;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import net.cubespace.Yamler.Config.Comment;
 import net.cubespace.Yamler.Config.YamlConfig;
 
-public class Config extends YamlConfig {
+@ToString
+public class LVMConfig extends YamlConfig {
 
 	@Comment("Path To Synology Surveillance Station Executable")
 	private @Getter @Setter String SurveillanceStationPath = "C:\\Program Files\\Synology\\SynologySurveillanceStationClient\\bin\\SynologySurveillanceStationClient.exe";
 	private @Getter @Setter ViewConfig[] ViewConfigurations = new ViewConfig[0];
 
-	public Config() {
+	public LVMConfig() {
 		CONFIG_HEADER = new String[]{"SynoLVM Configuration Data"};
 		CONFIG_FILE = new File("config.yml");
 	}
@@ -36,7 +38,8 @@ public class Config extends YamlConfig {
 	public ViewConfig newViewConfig() {
 		return new ViewConfig();
 	}
-
+	
+	@ToString
 	public class ViewConfig extends YamlConfig{
 
 		private @Getter @Setter String Name;
@@ -44,6 +47,7 @@ public class Config extends YamlConfig {
 		private @Getter @Setter int Monitor;
 		private @Getter @Setter Registry Registry = new Registry();
 
+		@ToString
 		public class Registry extends YamlConfig{
 
 			private @Getter @Setter String AutoBalance;

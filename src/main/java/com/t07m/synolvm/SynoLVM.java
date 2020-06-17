@@ -15,8 +15,13 @@
  */
 package com.t07m.synolvm;
 
+import java.io.File;
+
 import com.t07m.application.Application;
 import com.t07m.swing.console.ConsoleWindow;
+
+import lombok.Getter;
+import net.cubespace.Yamler.Config.InvalidConfigurationException;
 
 public class SynoLVM extends Application{
 
@@ -24,9 +29,25 @@ public class SynoLVM extends Application{
 		new SynoLVM();
 	}
 
+	private @Getter LVMConfig config;
+	private @Getter RegistryHandler registryHandler;
+	private @Getter ViewConfigFactory viewConfigFactory;
+	
 	private ConsoleWindow console;
-
+	
 	public void init() {
+		this.config = new LVMConfig();
+		try {
+			this.config.init();
+			this.config.save();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+			System.err.println("Unable to load configuration file!");
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e1) {}
+			System.exit(-1);
+		}
 		this.console = new ConsoleWindow("SynoLVM") {
 			public void closeRequested() {
 				stop();
@@ -35,5 +56,8 @@ public class SynoLVM extends Application{
 		this.console.setup();
 		this.console.setLocationRelativeTo(null);
 	    this.console.setVisible(true);
+	    this.registryHandler = new RegistryHandler(new File("lib/WindowsRegistry.exe"));
+	    this.viewConfigFactory = new ViewConfigFactory(this.config, this.registryHandler);
+	    
 	}
 }
