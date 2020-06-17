@@ -15,27 +15,13 @@
  */
 package com.t07m.synolvm;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.t07m.synolvm.config.LVMConfig.ViewConfig;
 
-import org.junit.jupiter.api.Test;
+import lombok.RequiredArgsConstructor;
 
-import com.t07m.synolvm.process.RegistryHandler;
+@RequiredArgsConstructor
+public class View {
 
-class RegistryHandlerTest {
-
-	@Test
-	void test() {
-		List<String> values = new ArrayList<String>();
-		values.add("LoginHistory");
-		values.add("WinGeometry");
-		values.add("WinStates");
-		values.add("DisplayZoom");
-		RegistryHandler handler = new RegistryHandler(new File("lib/WindowsRegistry.exe"));
-		Map<String, Object> exported = handler.getValues(values);
-		assert(handler.setValues(exported));
-	}
-
+	private final ViewConfig viewConfig;
+	
 }

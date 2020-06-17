@@ -16,26 +16,22 @@
 package com.t07m.synolvm;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import com.t07m.synolvm.process.RegistryHandler;
+import com.t07m.synolvm.process.ScreenHandler;
+import com.t07m.synolvm.process.ScreenHandler.Screen;
 
-class RegistryHandlerTest {
+class ScreenHandlerTest {
 
 	@Test
 	void test() {
-		List<String> values = new ArrayList<String>();
-		values.add("LoginHistory");
-		values.add("WinGeometry");
-		values.add("WinStates");
-		values.add("DisplayZoom");
-		RegistryHandler handler = new RegistryHandler(new File("lib/WindowsRegistry.exe"));
-		Map<String, Object> exported = handler.getValues(values);
-		assert(handler.setValues(exported));
+		ScreenHandler sh = new ScreenHandler(new File("lib/QueryScreen.exe"));
+		Screen[] screens = sh.queryScreens();
+		for(Screen s : screens) {
+			System.out.println(s.toString());
+		}
+		assert(screens.length > 0);
 	}
 
 }

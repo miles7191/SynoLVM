@@ -13,29 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm;
+package com.t07m.synolvm.process;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-import org.junit.jupiter.api.Test;
+import lombok.RequiredArgsConstructor;
 
-import com.t07m.synolvm.process.RegistryHandler;
+@RequiredArgsConstructor
+public class SurveillanceStationHandler {
 
-class RegistryHandlerTest {
-
-	@Test
-	void test() {
-		List<String> values = new ArrayList<String>();
-		values.add("LoginHistory");
-		values.add("WinGeometry");
-		values.add("WinStates");
-		values.add("DisplayZoom");
-		RegistryHandler handler = new RegistryHandler(new File("lib/WindowsRegistry.exe"));
-		Map<String, Object> exported = handler.getValues(values);
-		assert(handler.setValues(exported));
+	private final File survaillanceStation;
+	private final LaunchHandler launchHandler;
+	
+	public ProcessHandle launchSurveillanceStation() {
+		return launchHandler.executeHandler(survaillanceStation);
 	}
-
+	
 }

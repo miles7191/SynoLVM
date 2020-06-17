@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm;
+package com.t07m.synolvm.process;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 public class RegistryHandler {
 
@@ -64,17 +65,17 @@ public class RegistryHandler {
 		if(values != null ) {
 			try {
 				for(Entry<String, Object> entry : values.entrySet()) {
-					String ret = null;
+					String[] ret = null;
 					if(task == Task.GET) {
-						ret = executable.execute(10L, "get", REGISTRY_HIVE, entry.getKey());
+						ret = executable.execute(TimeUnit.SECONDS.toMillis(10), "get", REGISTRY_HIVE, entry.getKey());
 					}else if(task == Task.SET) {
-						ret = executable.execute(10L, "set", REGISTRY_HIVE, entry.getKey(), entry.getValue().toString());
+						ret = executable.execute(TimeUnit.SECONDS.toMillis(10), "set", REGISTRY_HIVE, entry.getKey(), entry.getValue().toString());
 					}
-					if(ret != null) {
+					if(ret != null && ret.length > 0) {
 						if(entry.getValue() instanceof Integer) {
-							values.put(entry.getKey(), Integer.parseInt(ret));
+							values.put(entry.getKey(), Integer.parseInt(ret[0]));
 						}else {
-							values.put(entry.getKey(), ret);
+							values.put(entry.getKey(), ret[0]);
 						}
 					}else {
 						values.put(entry.getKey(), null);

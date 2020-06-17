@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm;
+package com.t07m.synolvm.process;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class IOExecutableHandler {
 
 	private final File executable;
 
-	public String execute(long timeout, String... vars) throws IOException, InterruptedException {
+	public String[] execute(long timeout, String... vars) throws IOException, InterruptedException {
 		if(executable.exists() && executable.canExecute()) {
 			ProcessBuilder pb = new ProcessBuilder();
 			ArrayList<String> command = new ArrayList<String>();
@@ -39,15 +39,15 @@ public class IOExecutableHandler {
 			command.addAll(Arrays.asList(vars));
 			pb.command(command);
 			Process p = pb.start();
-			if(p != null && p.waitFor(timeout, TimeUnit.SECONDS)) {
-				StringBuilder returnValue = new StringBuilder();
+			if(p != null && p.waitFor(timeout, TimeUnit.MILLISECONDS)) {
+				List<String> returnValue = new ArrayList<String>();
 				BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				String line;
 				while((line = in.readLine()) != null) {
-					returnValue.append(line);
+					returnValue.add(line);
 				}
 				
-				return returnValue.toString();
+				return returnValue.toArray(new String[returnValue.size()]);
 			}		
 		}
 		return null;

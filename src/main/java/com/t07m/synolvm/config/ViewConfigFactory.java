@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm;
+package com.t07m.synolvm.config;
 
 import java.util.Arrays;
 import java.util.Map;
 
-import com.t07m.synolvm.LVMConfig.ViewConfig;
-import com.t07m.synolvm.LVMConfig.ViewConfig.Registry;
+import com.t07m.synolvm.config.LVMConfig.ViewConfig;
+import com.t07m.synolvm.config.LVMConfig.ViewConfig.Registry;
+import com.t07m.synolvm.process.RegistryHandler;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

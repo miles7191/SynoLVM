@@ -19,7 +19,10 @@ import java.io.File;
 
 import org.junit.jupiter.api.Test;
 
-import com.t07m.synolvm.LVMConfig.ViewConfig;
+import com.t07m.synolvm.config.LVMConfig;
+import com.t07m.synolvm.config.ViewConfigFactory;
+import com.t07m.synolvm.config.LVMConfig.ViewConfig;
+import com.t07m.synolvm.process.RegistryHandler;
 
 class ViewConfigFactoryTest {
 

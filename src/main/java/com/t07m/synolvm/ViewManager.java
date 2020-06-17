@@ -15,27 +15,18 @@
  */
 package com.t07m.synolvm;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-import org.junit.jupiter.api.Test;
+import com.t07m.application.Service;
 
-import com.t07m.synolvm.process.RegistryHandler;
+public class ViewManager extends Service<SynoLVM>{
 
-class RegistryHandlerTest {
+	public ViewManager(SynoLVM app) {
+		super(app, TimeUnit.SECONDS.toMillis(1));
+	}
 
-	@Test
-	void test() {
-		List<String> values = new ArrayList<String>();
-		values.add("LoginHistory");
-		values.add("WinGeometry");
-		values.add("WinStates");
-		values.add("DisplayZoom");
-		RegistryHandler handler = new RegistryHandler(new File("lib/WindowsRegistry.exe"));
-		Map<String, Object> exported = handler.getValues(values);
-		assert(handler.setValues(exported));
+	public void process() {
+		
 	}
 
 }

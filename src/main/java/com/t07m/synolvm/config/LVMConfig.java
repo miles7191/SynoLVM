@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm;
+package com.t07m.synolvm.config;
 
 import java.io.File;
 
@@ -44,6 +44,7 @@ public class LVMConfig extends YamlConfig {
 
 		private @Getter @Setter String Name;
 		private @Getter @Setter boolean Enabled;
+		private @Getter @Setter int Priority;
 		private @Getter @Setter int Monitor;
 		private @Getter @Setter Registry Registry = new Registry();
 
