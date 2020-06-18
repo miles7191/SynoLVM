@@ -86,7 +86,18 @@ public class ViewConfigFactory {
 		reg.setUseTestUpdateServer(registryValues.get("UseTestUpdateServer") != null ? ((String) registryValues.get("UseTestUpdateServer")) : null);
 		reg.setWinGeometry(registryValues.get("WinGeometry") != null ? ((String) registryValues.get("WinGeometry")) : null);
 		try { reg.setWinStates(registryValues.get("WinStates") != null ? Integer.parseInt((String)registryValues.get("WinStates")) : 0); }catch(NumberFormatException e) {}
+		setRecommendedValues(reg);
 		return vc;
+	}
+	
+	public void setRecommendedValues(Registry registry) {
+		registry.setAutoBalance("true");
+		registry.setAutoLogin("true");
+		registry.setEnableGpuDecoder("true");
+		registry.setAutoLogin("true");
+		registry.setHideSvsIcon("true");
+		registry.setRememberPassword("true");
+		registry.setShowHwLabel("false");
 	}
 
 }
