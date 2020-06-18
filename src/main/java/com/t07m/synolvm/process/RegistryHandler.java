@@ -39,7 +39,7 @@ public class RegistryHandler {
 			Map<String, Object> retValues = executeHandler(Task.SET, values);
 			if(retValues != null) {
 				for(Entry<String, Object> entry : values.entrySet()) {
-					if(retValues.get(entry.getKey()).equals(entry.getValue())) {
+					if(((retValues.get(entry.getKey()) == null) && (entry.getValue() == null)) || retValues.get(entry.getKey()).equals(entry.getValue())) {
 						continue;
 					}else {
 						return false;
