@@ -19,6 +19,9 @@ import java.io.File;
 
 import com.t07m.application.Application;
 import com.t07m.swing.console.ConsoleWindow;
+import com.t07m.synolvm.command.StopCommand;
+import com.t07m.synolvm.command.ViewDeleteCommand;
+import com.t07m.synolvm.command.ViewExportCommand;
 import com.t07m.synolvm.config.LVMConfig;
 import com.t07m.synolvm.config.ViewConfigFactory;
 import com.t07m.synolvm.process.LaunchHandler;
@@ -60,6 +63,9 @@ public class SynoLVM extends Application{
 			}
 		};
 		this.console.setup();
+		this.console.registerCommand(new StopCommand());
+		this.console.registerCommand(new ViewExportCommand(this));
+		this.console.registerCommand(new ViewDeleteCommand(this));
 		this.console.setLocationRelativeTo(null);
 		this.console.setVisible(true);
 		RegistryHandler registryHandler = new RegistryHandler(new File("lib/WindowsRegistry.exe"));
