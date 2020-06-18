@@ -23,7 +23,8 @@ import com.t07m.synolvm.config.LVMConfig;
 import com.t07m.synolvm.config.ViewConfigFactory;
 import com.t07m.synolvm.process.LaunchHandler;
 import com.t07m.synolvm.process.RegistryHandler;
-import com.t07m.synolvm.process.SurveillanceStationHandler;
+import com.t07m.synolvm.process.ScreenHandler;
+import com.t07m.synolvm.process.WindowHandler;
 
 import lombok.Getter;
 import net.cubespace.Yamler.Config.InvalidConfigurationException;
@@ -35,9 +36,8 @@ public class SynoLVM extends Application{
 	}
 
 	private @Getter LVMConfig config;
-	private @Getter RegistryHandler registryHandler;
 	private @Getter ViewConfigFactory viewConfigFactory;
-	private @Getter SurveillanceStationHandler surveillanceStationHandler;
+	private @Getter SurveillanceStationFactory surveillanceStationFactory;
 
 	private ConsoleWindow console;
 
@@ -62,8 +62,8 @@ public class SynoLVM extends Application{
 		this.console.setup();
 		this.console.setLocationRelativeTo(null);
 		this.console.setVisible(true);
-		this.registryHandler = new RegistryHandler(new File("lib/WindowsRegistry.exe"));
-		this.viewConfigFactory = new ViewConfigFactory(this.config, this.registryHandler);
-		this.surveillanceStationHandler = new SurveillanceStationHandler(new File(config.getSurveillanceStationPath()), new LaunchHandler(new File("lib/Launch.exe")));
+		RegistryHandler registryHandler = new RegistryHandler(new File("lib/WindowsRegistry.exe"));
+		this.viewConfigFactory = new ViewConfigFactory(this.config, registryHandler);
+		this.surveillanceStationFactory = new SurveillanceStationFactory(new File(this.config.getSurveillanceStationPath()), registryHandler, new LaunchHandler(new File("lib/Launch.exe")), new ScreenHandler(new File("lib/QueryScreen.exe")), new WindowHandler(new File("QueryWindow.exe")));
 	}
 }
