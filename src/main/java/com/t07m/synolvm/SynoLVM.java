@@ -29,6 +29,7 @@ import com.t07m.synolvm.config.ViewConfigFactory;
 import com.t07m.synolvm.process.LaunchHandler;
 import com.t07m.synolvm.process.RegistryHandler;
 import com.t07m.synolvm.process.ScreenHandler;
+import com.t07m.synolvm.process.SurveillanceStationFactory;
 import com.t07m.synolvm.process.WindowHandler;
 
 import lombok.Getter;
@@ -44,7 +45,7 @@ public class SynoLVM extends Application{
 	private @Getter ViewConfigFactory viewConfigFactory;
 	private @Getter SurveillanceStationFactory surveillanceStationFactory;
 
-	private ConsoleWindow console;
+	private @Getter ConsoleWindow console;
 
 	public void init() {
 		this.config = new LVMConfig();

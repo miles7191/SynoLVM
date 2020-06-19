@@ -24,14 +24,15 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
-import com.t07m.synolvm.SurveillanceStationFactory.SurveillanceStationClient;
 import com.t07m.synolvm.config.LVMConfig;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig;
 import com.t07m.synolvm.config.ViewConfigFactory;
 import com.t07m.synolvm.process.LaunchHandler;
 import com.t07m.synolvm.process.RegistryHandler;
 import com.t07m.synolvm.process.ScreenHandler;
+import com.t07m.synolvm.process.SurveillanceStationFactory;
 import com.t07m.synolvm.process.WindowHandler;
+import com.t07m.synolvm.process.SurveillanceStationFactory.SurveillanceStationClient;
 
 class SurveillanceStationFactoryTest {
 
@@ -49,13 +50,16 @@ class SurveillanceStationFactoryTest {
 
 		SurveillanceStationFactory ssf = new SurveillanceStationFactory(ss, rh, lh, sh, wh);
 		ExecutorService es = Executors.newFixedThreadPool(4);
-		for(int i = 0; i < 10; i++) {
+		for(int i = 0; i < 0; i++) {
 			Thread t = new Thread() {				
 				public void run() {
 					SurveillanceStationClient ssc = ssf.newSurveillanceStationClient();
 					if(vc != null && ssc.launch(TimeUnit.SECONDS.toMillis(10), 0, vc.getRegistry())) {
 						System.out.println(ssc.getTitle());
 						assert(ssc.getWindow() != null);
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {}
 						ssc.stop();
 					}
 				}

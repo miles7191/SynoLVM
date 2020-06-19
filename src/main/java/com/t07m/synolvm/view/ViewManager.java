@@ -13,18 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm;
+package com.t07m.synolvm.view;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import com.t07m.application.Service;
+import com.t07m.synolvm.SynoLVM;
 
 public class ViewManager extends Service<SynoLVM>{
 
+	private ArrayList<View> views;
+	
 	public ViewManager(SynoLVM app) {
 		super(app, TimeUnit.SECONDS.toMillis(1));
 	}
 
+	public void init() {
+		views = new ArrayList<View>();
+	}
+	
 	public void process() {
 		
 	}

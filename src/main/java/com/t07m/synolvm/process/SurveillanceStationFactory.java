@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm;
+package com.t07m.synolvm.process;
 
 import java.awt.Rectangle;
 import java.io.File;
@@ -22,11 +22,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.t07m.synolvm.config.LVMConfig.ViewConfig.Registry;
-import com.t07m.synolvm.process.LaunchHandler;
-import com.t07m.synolvm.process.RegistryHandler;
-import com.t07m.synolvm.process.ScreenHandler;
 import com.t07m.synolvm.process.ScreenHandler.Screen;
-import com.t07m.synolvm.process.WindowHandler;
 import com.t07m.synolvm.process.WindowHandler.Window;
 
 import lombok.RequiredArgsConstructor;
@@ -98,6 +94,15 @@ public class SurveillanceStationFactory {
 				return screen.getRect(true).contains(window.getRect());
 			}
 			return false;
+		}
+		
+		public long getProcessRuntime() {
+			synchronized(processLock) {
+				if(process != null && process.isAlive()) {
+					return System.currentTimeMillis() - process.info().startInstant().get().toEpochMilli();
+				}
+			}
+			return -1;
 		}
 		
 		public boolean isRunning() {

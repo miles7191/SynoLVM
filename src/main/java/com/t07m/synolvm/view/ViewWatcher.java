@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm;
+package com.t07m.synolvm.view;
 
-import com.t07m.synolvm.config.LVMConfig.ViewConfig;
+import com.t07m.application.Service;
+import com.t07m.synolvm.SynoLVM;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AccessLevel;
+import lombok.Getter;
 
-@RequiredArgsConstructor
-public class View {
+public abstract class ViewWatcher extends Service<SynoLVM>{
 
-	private final ViewConfig viewConfig;
+	private final @Getter(AccessLevel.PROTECTED) View view;
 	
+	public ViewWatcher(SynoLVM app, long updateFrequency, View view) {
+		super(app, updateFrequency);
+		this.view = view;
+	}
 }
