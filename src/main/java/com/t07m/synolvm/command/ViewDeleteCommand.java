@@ -54,7 +54,7 @@ public class ViewDeleteCommand extends Command {
 					config.setViewConfigurations(currentViews.toArray(new ViewConfig[currentViews.size()]));
 					try {
 						config.save();
-						console.log("Successfully deleted view: " + name);
+						console.log("Successfully deleted view: " + vc.getName());
 					} catch (InvalidConfigurationException e) {
 						console.log("Warning! View Export was unable to save the configuration to disk. Changes will not persist through restart!");
 					}

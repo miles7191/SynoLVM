@@ -48,7 +48,7 @@ public class ViewExportCommand extends Command{
 		op.acceptsAll(Arrays.asList(priorityOptions), "View Priortiy").withRequiredArg().ofType(Integer.class);
 		String[] enabledOptions = { "e", 
 		"enable" };
-		op.acceptsAll(Arrays.asList(enabledOptions), "Monitor");
+		op.acceptsAll(Arrays.asList(enabledOptions), "Enable View");
 		setOptionParser(op);
 	}
 
@@ -79,7 +79,7 @@ public class ViewExportCommand extends Command{
 				config.setViewConfigurations(currentViews.toArray(new ViewConfig[currentViews.size()]));
 				try {
 					config.save();
-					console.log("Successfully exported view: " + name);
+					console.log("Successfully exported view: " + vc.getName());
 				} catch (InvalidConfigurationException e) {
 					console.log("Warning! View Export was unable to save the configuration to disk. Changes will not persist through restart!");
 				}
