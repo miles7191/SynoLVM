@@ -46,7 +46,6 @@ public class IOExecutableHandler {
 				while((line = in.readLine()) != null) {
 					returnValue.add(line);
 				}
-				
 				return returnValue.toArray(new String[returnValue.size()]);
 			}		
 		}
