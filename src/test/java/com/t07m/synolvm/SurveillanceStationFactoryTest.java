@@ -18,6 +18,8 @@ package com.t07m.synolvm;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
@@ -46,6 +48,26 @@ class SurveillanceStationFactoryTest {
 		ViewConfig vc = vcf.loadNewViewConfig();
 
 		SurveillanceStationFactory ssf = new SurveillanceStationFactory(ss, rh, lh, sh, wh);
+		ExecutorService es = Executors.newFixedThreadPool(4);
+		for(int i = 0; i < 10; i++) {
+			Thread t = new Thread() {				
+				public void run() {
+					SurveillanceStationClient ssc = ssf.newSurveillanceStationClient();
+					if(vc != null && ssc.launch(TimeUnit.SECONDS.toMillis(10), 0, vc.getRegistry())) {
+						System.out.println(ssc.getTitle());
+						assert(ssc.getWindow() != null);
+						ssc.stop();
+					}
+				}
+			};
+			es.submit(t);
+		}
+		try {
+			es.shutdown();
+			es.awaitTermination(1, TimeUnit.HOURS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		SurveillanceStationClient ssc = ssf.newSurveillanceStationClient();
 		if(vc != null && ssc.launch(TimeUnit.SECONDS.toMillis(10), 0, vc.getRegistry())) {
 			System.out.println(ssc.getTitle());
