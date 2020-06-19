@@ -37,17 +37,21 @@ public class IOExecutableHandler {
 			ArrayList<String> command = new ArrayList<String>();
 			command.add(executable.getAbsolutePath());
 			command.addAll(Arrays.asList(vars));
+			System.out.println(String.join(" ", command));
 			pb.command(command);
+			long start = System.currentTimeMillis();
 			Process p = pb.start();
-			if(p != null && p.waitFor(timeout, TimeUnit.MILLISECONDS)) {
+			if(p != null) {
 				List<String> returnValue = new ArrayList<String>();
 				BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-				String line;
-				while((line = in.readLine()) != null) {
-					returnValue.add(line);
+				while((p.isAlive() || p.getInputStream().available() > 0) && System.currentTimeMillis() - start < timeout) {
+					String line;
+					while((line = in.readLine()) != null) {
+						returnValue.add(line);
+					}
 				}
 				return returnValue.toArray(new String[returnValue.size()]);
-			}		
+			}
 		}
 		return null;
 	}
