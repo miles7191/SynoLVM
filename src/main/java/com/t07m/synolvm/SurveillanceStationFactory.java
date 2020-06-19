@@ -161,7 +161,7 @@ public class SurveillanceStationFactory {
 							if(getWindow() == null) {
 								stop();
 							}
-							return process != null;
+							return running = process != null;
 						}
 					}
 					return false;
@@ -185,6 +185,7 @@ public class SurveillanceStationFactory {
 						process = null;
 					}
 					this.monitor = Integer.MAX_VALUE;
+					this.running = false;
 				}
 			}
 
