@@ -22,20 +22,20 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import com.t07m.synolvm.config.LVMConfig;
+import com.t07m.synolvm.config.ViewConfigFactory;
+import com.t07m.synolvm.config.LVMConfig.ViewConfig;
 import com.t07m.synolvm.process.RegistryHandler;
 
 class RegistryHandlerTest {
 
 	@Test
 	void test() {
-		List<String> values = new ArrayList<String>();
-		values.add("LoginHistory");
-		values.add("WinGeometry");
-		values.add("WinStates");
-		values.add("DisplayZoom");
-		RegistryHandler handler = new RegistryHandler(new File("lib/WindowsRegistry.exe"));
-		Map<String, Object> exported = handler.getValues(values);
-		assert(handler.setValues(exported));
+		RegistryHandler rh = new RegistryHandler();
+		LVMConfig config = new LVMConfig();
+		ViewConfigFactory vcf = new ViewConfigFactory(config, rh);
+		ViewConfig vc = vcf.loadNewViewConfig();
+		assert(rh.importRegistry(vc.getRegistry()));
 	}
 
 }

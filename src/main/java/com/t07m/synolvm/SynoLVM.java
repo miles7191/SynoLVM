@@ -73,7 +73,7 @@ public class SynoLVM extends Application{
 		this.console.registerCommand(new ViewSetCommand(this));
 		this.console.setLocationRelativeTo(null);
 		this.console.setVisible(true);
-		RegistryHandler registryHandler = new RegistryHandler(new File("lib/WindowsRegistry.exe"));
+		RegistryHandler registryHandler = new RegistryHandler();
 		this.viewConfigFactory = new ViewConfigFactory(this.config, registryHandler);
 		this.surveillanceStationFactory = new SurveillanceStationFactory(new File(this.config.getSurveillanceStationPath()), registryHandler, new LaunchHandler(new File("lib/Launch.exe")), new ScreenHandler(new File("lib/QueryScreen.exe")), new WindowHandler(new File("QueryWindow.exe")));
 	}

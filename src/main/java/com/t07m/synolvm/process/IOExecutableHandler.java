@@ -37,7 +37,6 @@ public class IOExecutableHandler {
 			ArrayList<String> command = new ArrayList<String>();
 			command.add(executable.getAbsolutePath());
 			command.addAll(Arrays.asList(vars));
-			System.out.println(String.join(" ", command));
 			pb.command(command);
 			long start = System.currentTimeMillis();
 			Process p = pb.start();

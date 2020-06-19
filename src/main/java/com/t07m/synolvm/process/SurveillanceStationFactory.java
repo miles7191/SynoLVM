@@ -119,33 +119,7 @@ public class SurveillanceStationFactory {
 		}
 
 		private boolean importRegistry(Registry registry) {
-			Map<String, Object> values = new HashMap<String, Object>();
-			values.put("AutoBalance", registry.getAutoBalance());
-			values.put("AutoLogin", registry.getAutoLogin());
-			values.put("DisplayZoom", registry.getDisplayZoom());
-			values.put("EnableGpuDecoder", registry.getEnableGpuDecoder());
-			values.put("HideSvsIcon", registry.getHideSvsIcon());
-			values.put("InstallerLang", registry.getInstallerLang());
-			values.put("LoggingConfig", registry.getLoggingConfig());
-			values.put("LoginHistory", registry.getLoginHistory());
-			values.put("LoginLang", registry.getLoginLang());
-			values.put("LowestResolution", registry.getLowestResolution());
-			values.put("MaxGpuDecoderNum", registry.getMaxGpuDecoderNum());
-			values.put("Name", registry.getName());
-			values.put("ProxyAuthEnabled", registry.getProxyAuthEnabled());
-			values.put("ProxyAuthPasswd", registry.getProxyAuthPasswd());
-			values.put("ProxyAuthUserName", registry.getProxyAuthUserName());
-			values.put("ProxyIP", registry.getProxyIP());
-			values.put("ProxyPort", registry.getProxyPort());
-			values.put("ProxyType", registry.getProxyType());
-			values.put("RememberPassword", registry.getRememberPassword());
-			values.put("SessionCookie", registry.getSessionCookie());
-			values.put("ShowHwLabel", registry.getShowHwLabel());
-			values.put("Upgrader", registry.getUpgrader());
-			values.put("UseTestUpdateServer", registry.getUseTestUpdateServer());
-			values.put("WinGeometry", registry.getWinGeometry());
-			values.put("WinStates", registry.getWinStates());
-			return registryHandler.setValues(values);
+			return registryHandler.importRegistry(registry);
 		}
 
 		public boolean launch(long timeout, int monitor, Registry registry) {

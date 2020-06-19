@@ -29,7 +29,7 @@ class ViewConfigFactoryTest {
 	@Test
 	void test() {
 		LVMConfig config = new LVMConfig();
-		RegistryHandler handler = new RegistryHandler(new File("lib/WindowsRegistry.exe"));
+		RegistryHandler handler = new RegistryHandler();
 		ViewConfigFactory vcf = new ViewConfigFactory(config, handler);
 		ViewConfig vc = vcf.loadNewViewConfig();
 		System.out.println(vc.toString());

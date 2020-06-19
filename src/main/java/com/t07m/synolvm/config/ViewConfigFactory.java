@@ -15,11 +15,7 @@
  */
 package com.t07m.synolvm.config;
 
-import java.util.Arrays;
-import java.util.Map;
-
 import com.t07m.synolvm.config.LVMConfig.ViewConfig;
-import com.t07m.synolvm.config.LVMConfig.ViewConfig.Registry;
 import com.t07m.synolvm.process.RegistryHandler;
 
 import lombok.NonNull;
@@ -33,71 +29,9 @@ public class ViewConfigFactory {
 
 	public ViewConfig loadNewViewConfig() {
 		ViewConfig vc = config.newViewConfig();
-		Map<String, Object> registryValues = registryHandler.getValues(Arrays.asList(new String[] {
-				"AutoBalance",
-				"AutoLogin",
-				"DisplayZoom",
-				"EnableGpuDecoder",
-				"HideSvsIcon",
-				"InstallerLang",
-				"LoggingConfig",
-				"LoginHistory",
-				"LoginLang",
-				"LowestResolution",
-				"MaxGpuDecoderNum",
-				"Name",
-				"ProxyAuthEnabled",
-				"ProxyAuthPasswd",
-				"ProxyAuthUserName",
-				"ProxyIP",
-				"ProxyPort",
-				"ProxyType",
-				"RememberPassword",
-				"SessionCookie",
-				"ShowHwLabel",
-				"Upgrader",
-				"UseTestUpdateServer",
-				"WinGeometry",
-				"WinStates"
-		}));
-		Registry reg = vc.getRegistry();
-		reg.setAutoBalance(registryValues.get("AutoBalance") != null ? ((String) registryValues.get("AutoBalance")) : null);
-		reg.setAutoLogin(registryValues.get("AutoLogin") != null ? ((String) registryValues.get("AutoLogin")) : null);
-		reg.setDisplayZoom(registryValues.get("DisplayZoom") != null ? ((String) registryValues.get("DisplayZoom")) : null);
-		reg.setEnableGpuDecoder(registryValues.get("EnableGpuDecoder") != null ? ((String) registryValues.get("EnableGpuDecoder")) : null);
-		reg.setHideSvsIcon(registryValues.get("HideSvsIcon") != null ? ((String) registryValues.get("HideSvsIcon")) : null);
-		reg.setInstallerLang(registryValues.get("InstallerLang") != null ? ((String) registryValues.get("InstallerLang")) : null);
-		reg.setLoggingConfig(registryValues.get("LoggingConfig") != null ? ((String) registryValues.get("LoggingConfig")) : null);
-		reg.setLoginHistory(registryValues.get("LoginHistory") != null ? ((String) registryValues.get("LoginHistory")) : null);
-		reg.setLoginLang(registryValues.get("LoginLang") != null ? ((String) registryValues.get("LoginLang")) : null);
-		try { reg.setLowestResolution(registryValues.get("LowestResolution") != null ? Integer.parseInt((String)registryValues.get("LowestResolution")) : 0); }catch(NumberFormatException e) {}
-		try { reg.setMaxGpuDecoderNum(registryValues.get("MaxGpuDecoderNum") != null ? Integer.parseInt((String)registryValues.get("MaxGpuDecoderNum")) : 0); }catch(NumberFormatException e) {}
-		reg.setName(registryValues.get("Name") != null ? ((String) registryValues.get("Name")) : null);
-		reg.setProxyAuthEnabled(registryValues.get("ProxyAuthEnabled") != null ? ((String) registryValues.get("ProxyAuthEnabled")) : null);
-		reg.setProxyAuthPasswd(registryValues.get("ProxyAuthPasswd") != null ? ((String) registryValues.get("ProxyAuthPasswd")) : null);
-		reg.setProxyAuthUserName(registryValues.get("ProxyAuthUserName") != null ? ((String) registryValues.get("ProxyAuthUserName")) : null);
-		reg.setProxyIP(registryValues.get("ProxyIP") != null ? ((String) registryValues.get("ProxyIP")) : null);
-		try { reg.setProxyPort(registryValues.get("ProxyPort") != null ? Integer.parseInt((String)registryValues.get("ProxyPort")) : 0); }catch(NumberFormatException e) {}
-		try { reg.setProxyType(registryValues.get("ProxyType") != null ? Integer.parseInt((String)registryValues.get("ProxyType")) : 0); }catch(NumberFormatException e) {}
-		reg.setRememberPassword(registryValues.get("RememberPassword") != null ? ((String) registryValues.get("RememberPassword")) : null);
-		reg.setSessionCookie(registryValues.get("SessionCookie") != null ? ((String) registryValues.get("SessionCookie")) : null);
-		reg.setShowHwLabel(registryValues.get("ShowHwLabel") != null ? ((String) registryValues.get("ShowHwLabel")) : null);
-		try { reg.setUpgrader(registryValues.get("Upgrader") != null ? Integer.parseInt((String)registryValues.get("Upgrader")) : 0); }catch(NumberFormatException e) {}
-		reg.setUseTestUpdateServer(registryValues.get("UseTestUpdateServer") != null ? ((String) registryValues.get("UseTestUpdateServer")) : null);
-		reg.setWinGeometry(registryValues.get("WinGeometry") != null ? ((String) registryValues.get("WinGeometry")) : null);
-		try { reg.setWinStates(registryValues.get("WinStates") != null ? Integer.parseInt((String)registryValues.get("WinStates")) : 0); }catch(NumberFormatException e) {}
-		setRecommendedValues(reg);
-		return vc;
+		if(registryHandler.exportRegistryTo(vc.getRegistry())) {
+			return vc;
+		}
+		return null;
 	}
-	
-	public void setRecommendedValues(Registry registry) {
-		registry.setAutoBalance("true");
-		registry.setAutoLogin("true");
-		registry.setEnableGpuDecoder("true");
-		registry.setAutoLogin("true");
-		registry.setHideSvsIcon("true");
-		registry.setRememberPassword("true");
-		registry.setShowHwLabel("false");
-	}
-
 }

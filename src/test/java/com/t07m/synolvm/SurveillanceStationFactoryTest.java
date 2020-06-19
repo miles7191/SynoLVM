@@ -39,27 +39,23 @@ class SurveillanceStationFactoryTest {
 	@Test
 	void test() {
 		File ss = new File("C:\\Program Files\\Synology\\SynologySurveillanceStationClient\\bin\\SynologySurveillanceStationClient.exe");
-		RegistryHandler rh = new RegistryHandler(new File("lib/WindowsRegistry.exe"));
+		RegistryHandler rh = new RegistryHandler();
 		LaunchHandler lh = new LaunchHandler(new File("lib/Launch.exe"));
 		ScreenHandler sh = new ScreenHandler(new File("lib/QueryScreen.exe"));
 		WindowHandler wh = new WindowHandler(new File("lib/QueryWindow.exe"));
 		LVMConfig config = new LVMConfig();
-		RegistryHandler handler = new RegistryHandler(new File("lib/WindowsRegistry.exe"));
-		ViewConfigFactory vcf = new ViewConfigFactory(config, handler);
+		ViewConfigFactory vcf = new ViewConfigFactory(config, rh);
 		ViewConfig vc = vcf.loadNewViewConfig();
 
 		SurveillanceStationFactory ssf = new SurveillanceStationFactory(ss, rh, lh, sh, wh);
-		ExecutorService es = Executors.newFixedThreadPool(4);
-		for(int i = 0; i < 0; i++) {
+		ExecutorService es = Executors.newWorkStealingPool();
+		for(int i = 0; i < 10; i++) {
 			Thread t = new Thread() {				
 				public void run() {
 					SurveillanceStationClient ssc = ssf.newSurveillanceStationClient();
 					if(vc != null && ssc.launch(TimeUnit.SECONDS.toMillis(10), 0, vc.getRegistry())) {
 						System.out.println(ssc.getTitle());
 						assert(ssc.getWindow() != null);
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {}
 						ssc.stop();
 					}
 				}
