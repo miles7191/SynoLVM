@@ -66,7 +66,7 @@ public class View {
 	}
 	
 	public boolean withinGracePeriod() {
-		return surveillanceStationClient.getProcessRuntime() != -1 ? surveillanceStationClient.getProcessRuntime() < PROCESS_GRACE_PERIOD : false;
+		return surveillanceStationClient.getProcessRuntime() < PROCESS_GRACE_PERIOD;
 	}
 	
 	public void inValidate() {

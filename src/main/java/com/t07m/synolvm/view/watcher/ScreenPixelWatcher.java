@@ -30,7 +30,7 @@ public class ScreenPixelWatcher extends ViewWatcher {
 	private BufferedImage lastPass = null;
 
 	public ScreenPixelWatcher(SynoLVM app, View view) {
-		super(app, TimeUnit.MINUTES.toMillis(1), view);
+		super(app, TimeUnit.SECONDS.toMillis(30), view);
 	}
 
 	public void process() {
