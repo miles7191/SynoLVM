@@ -30,7 +30,7 @@ public class WindowLocationWatcher extends ViewWatcher {
 	public void process() {
 		if(!getView().withinGracePeriod()) {
 			synchronized(getView().getSurveillanceStationClient()) {
-				if(getView().getViewConfig().getMonitor() != getView().getSurveillanceStationClient().getMonitor() || getView().getSurveillanceStationClient().isCorrectScreen()) {
+				if(getView().getViewConfig().getMonitor() != getView().getSurveillanceStationClient().getMonitor() || !getView().getSurveillanceStationClient().isCorrectScreen()) {
 					getView().inValidate();
 					app.getConsole().log("View failed WindowLocationMonitor: " + getView().getViewConfig().getName());
 				}
