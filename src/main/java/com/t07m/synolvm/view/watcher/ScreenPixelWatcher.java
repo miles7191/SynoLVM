@@ -49,13 +49,15 @@ public class ScreenPixelWatcher extends ViewWatcher {
 									for (int y = 0; y < lastPass.getHeight(); y++) {
 										if (lastPass.getRGB(x, y) != current.getRGB(x, y)) {
 											lastPass = current;
-											getView().inValidate();
 											return; 
 										}
 									} 
 								}
 							}
-							lastPass = current;
+							lastPass = null;
+							getView().inValidate();
+							app.getConsole().log("View failed ScreenPixelWatcher: " + getView().getViewConfig().getName());
+							
 						}
 					} catch (AWTException e) {}
 				}

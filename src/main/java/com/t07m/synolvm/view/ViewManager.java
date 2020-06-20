@@ -17,6 +17,7 @@ package com.t07m.synolvm.view;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -66,8 +67,46 @@ public class ViewManager extends Service<SynoLVM>{
 				}
 			}
 		}
+		synchronized(views) {
+			views.sort(new Comparator<View>() {
+				public int compare(View o1, View o2) {
+					return Integer.compare(o2.getViewConfig().getPriority(), o1.getViewConfig().getPriority());
+				}
+			});
+			boolean foundInvalid = false;
+			for(View v : views) {
+				if(foundInvalid) {
+					app.getConsole().log("Killing View For Priority View: " + v.getViewConfig().getName());
+					v.stop();
+				}else {
+					if(v.getSurveillanceStationClient().isRunning()) {
+						if(!v.getViewConfig().isEnabled()) {
+							app.getConsole().log("View No Longer Enabled. Killing View: " + v.getViewConfig().getName());
+							v.stop();
+						}
+						if(!v.isValid() && !v.withinGracePeriod()) {
+							app.getConsole().log("View Invalidated. Killing View: " + v.getViewConfig().getName());
+							v.stop();
+							if(v.getSurveillanceStationClient().screenAvailable(v.getViewConfig().getMonitor())) {
+								foundInvalid = true;
+							}
+						}
+					}else if(v.getViewConfig().isEnabled() && v.getSurveillanceStationClient().screenAvailable(v.getViewConfig().getMonitor())) {
+						app.getConsole().log("Launching View: " + v.getViewConfig().getName());
+						if(v.launch(app)) {
+							for(ViewWatcher vw : v.getViewWatchers()) {
+								if(vw != null) {
+									app.registerService(vw);
+								}
+							}
+							foundInvalid = true;
+						}
+					}
+				}
+			}
+		}
 	}
-	
+
 	private void addView(ViewConfig vc) {
 		synchronized(views) {
 			for(View v : views) {
@@ -82,14 +121,27 @@ public class ViewManager extends Service<SynoLVM>{
 			app.getConsole().log("Loaded View: " + vc.getName());
 		}
 	}
-	
+
 	private void cleanupRemovedView(View view) {
 		synchronized(views) {
 			for(ViewWatcher vw : view.getViewWatchers()) {
 				if(vw != null) {
 					app.removeService(vw);
+					view.getSurveillanceStationClient().stop();
 				}
 			}
 		}
 	}
+
+	public void cleanup() {
+		synchronized(views) {
+			Iterator<View> itr = views.iterator();
+			while(itr.hasNext()) {
+				View v = itr.next();
+				itr.remove();
+				cleanupRemovedView(v);
+			}
+		}
+	}
+
 }

@@ -85,6 +85,14 @@ public class SurveillanceStationFactory {
 			}
 			return null;
 		}
+		
+		public boolean screenAvailable(int id) {
+			Screen[] screens = screenHandler.queryScreens();
+			if(screens != null && screens.length > id) {
+				return screens[id] != null;
+			}
+			return false;
+		}
 
 		public boolean isCorrectScreen() {
 			Screen screen = getScreen();
@@ -133,7 +141,7 @@ public class SurveillanceStationFactory {
 							long start = System.currentTimeMillis();
 							while(System.currentTimeMillis() - start < timeout && getWindow() == null) {
 								try {
-									Thread.sleep(Math.min(100, System.currentTimeMillis()-start));
+									Thread.sleep(Math.min(100, System.currentTimeMillis()-start+timeout));
 								} catch (InterruptedException e) {}
 							}
 							if(getWindow() == null) {

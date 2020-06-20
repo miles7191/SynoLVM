@@ -39,8 +39,6 @@ public class View {
 	private WindowLocationWatcher windowLocationWatcher;
 	private WindowTitleWatcher windowTitleWatcher;
 	
-	private @Getter long launchTime = -1;
-	
 	public View(ViewConfig config, SurveillanceStationClient client) {
 		this.viewConfig = config;
 		this.surveillanceStationClient = client;
@@ -49,7 +47,6 @@ public class View {
 	public boolean launch(SynoLVM lvm) {
 		boolean completed = surveillanceStationClient.launch(TimeUnit.SECONDS.toMillis(10), viewConfig.getMonitor(), viewConfig.getRegistry());
 		if(completed) {
-			launchTime = System.currentTimeMillis();
 			if(screenPixelWatcher == null)
 				screenPixelWatcher = new ScreenPixelWatcher(lvm, this);
 			if(windowLocationWatcher == null)
@@ -57,12 +54,11 @@ public class View {
 			if(windowTitleWatcher == null)
 				windowTitleWatcher = new WindowTitleWatcher(lvm, this);
 		}
-		return completed;
+		return valid = completed;
 	}
 	
 	public void stop() {
 		surveillanceStationClient.stop();
-		launchTime = -1;
 	}
 	
 	public ViewWatcher[] getViewWatchers() {
