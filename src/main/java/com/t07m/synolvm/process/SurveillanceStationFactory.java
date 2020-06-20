@@ -38,7 +38,7 @@ public class SurveillanceStationFactory {
 	public SurveillanceStationClient newSurveillanceStationClient() {
 		return new SurveillanceStationClient();
 	}
-	
+
 	public class SurveillanceStationClient{
 
 		private boolean running = false;
@@ -68,7 +68,7 @@ public class SurveillanceStationFactory {
 				return null;
 			}
 		}
-		
+
 		public Window getWindow() {
 			synchronized(processLock) {
 				if(process != null) {
@@ -77,7 +77,7 @@ public class SurveillanceStationFactory {
 				return null;
 			}
 		}
-		
+
 		public Screen getScreen() {
 			Screen[] screens = screenHandler.queryScreens();
 			if(screens != null && screens.length > monitor) {
@@ -85,7 +85,7 @@ public class SurveillanceStationFactory {
 			}
 			return null;
 		}
-		
+
 		public boolean screenAvailable(int id) {
 			Screen[] screens = screenHandler.queryScreens();
 			if(screens != null && screens.length > id) {
@@ -102,7 +102,7 @@ public class SurveillanceStationFactory {
 			}
 			return false;
 		}
-		
+
 		public long getProcessRuntime() {
 			synchronized(processLock) {
 				if(process != null && process.isAlive()) {
@@ -111,7 +111,7 @@ public class SurveillanceStationFactory {
 			}
 			return -1;
 		}
-		
+
 		public boolean isRunning() {
 			synchronized(processLock) {
 				if(running) {
@@ -132,22 +132,24 @@ public class SurveillanceStationFactory {
 		public boolean launch(long timeout, int monitor, Registry registry) {
 			synchronized(processLock) {
 				synchronized(registryHandler) {
-					if(!running && importRegistry(registry)) {
+					if(!running) {
 						this.monitor = monitor;
 						Screen screen = getScreen();
 						if(screen != null) {
 							registry.setWinGeometry(screen.getX()+","+screen.getY()+",1280,660");
-							process = launchHandler.executeHandler(surveillanceStation);
-							long start = System.currentTimeMillis();
-							while(System.currentTimeMillis() - start < timeout && getWindow() == null) {
-								try {
-									Thread.sleep(Math.min(100, System.currentTimeMillis()-start+timeout));
-								} catch (InterruptedException e) {}
+							if(importRegistry(registry)) {
+								process = launchHandler.executeHandler(surveillanceStation);
+								long start = System.currentTimeMillis();
+								while(System.currentTimeMillis() - start < timeout && getWindow() == null) {
+									try {
+										Thread.sleep(Math.min(100, System.currentTimeMillis()-start+timeout));
+									} catch (InterruptedException e) {}
+								}
+								if(getWindow() == null) {
+									stop();
+								}
+								return running = process != null;
 							}
-							if(getWindow() == null) {
-								stop();
-							}
-							return running = process != null;
 						}
 					}
 					return false;

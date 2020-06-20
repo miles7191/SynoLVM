@@ -79,8 +79,10 @@ public class ViewManager extends Service<SynoLVM>{
 			boolean foundInvalid = false;
 			for(View v : views) {
 				if(foundInvalid) {
-					app.getConsole().log("Killing View For Priority View: " + v.getViewConfig().getName());
-					v.stop();
+					if(v.getSurveillanceStationClient().isRunning()) {
+						app.getConsole().log("Killing View For Priority View: " + v.getViewConfig().getName());
+						v.stop();
+					}
 				}else {
 					if(v.getSurveillanceStationClient().isRunning()) {
 						if(!v.getViewConfig().isEnabled()) {
@@ -96,9 +98,11 @@ public class ViewManager extends Service<SynoLVM>{
 						}
 					}else if(v.getViewConfig().isEnabled() && v.getSurveillanceStationClient().screenAvailable(v.getViewConfig().getMonitor())) {
 						if(lastLaunch != null) {
-							Window w = lastLaunch.getSurveillanceStationClient().getWindow();
-							if(w != null && w.getTitle().equals("Synology Surveillance Station Client")) {
-								return;
+							if(lastLaunch.withinGracePeriod()) {
+								Window w = lastLaunch.getSurveillanceStationClient().getWindow();
+								if(w == null || (w != null && w.getTitle().equals("Synology Surveillance Station Client"))) {
+									return;
+								}
 							}
 						}
 						app.getConsole().log("Launching View: " + v.getViewConfig().getName());

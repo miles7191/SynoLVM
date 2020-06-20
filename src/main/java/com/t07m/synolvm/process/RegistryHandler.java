@@ -49,7 +49,7 @@ public class RegistryHandler {
 							return true;
 						} 
 						p.destroyForcibly();
-					} catch (IOException|InterruptedException iOException) {} 
+					} catch (IOException|InterruptedException e) {} 
 					tf.delete();
 				}
 			}
