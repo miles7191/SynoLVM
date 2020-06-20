@@ -15,16 +15,11 @@
  */
 package com.t07m.synolvm;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 
 import com.t07m.synolvm.config.LVMConfig;
-import com.t07m.synolvm.config.ViewConfigFactory;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig;
+import com.t07m.synolvm.config.ViewConfigFactory;
 import com.t07m.synolvm.process.RegistryHandler;
 
 class RegistryHandlerTest {

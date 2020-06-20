@@ -61,14 +61,16 @@ public class ViewListCommand extends Command {
 						if(vc.getRegistry().getLoginHistory() != null) {
 							try {
 								Gson gson = new Gson();
-								JsonArray jsonArray = gson.fromJson(vc.getRegistry().getLoginHistory(), JsonArray.class);
+								JsonArray jsonArray = gson.fromJson(vc.getRegistry().getLoginHistory().replace("\\\"", "\""), JsonArray.class);
 								JsonObject json = jsonArray.get(0).getAsJsonObject();
 								for(Entry<String, JsonElement> entry : json.entrySet()) {
 									if(entry.getValue() != null && entry.getValue().getAsString().length() > 0) {
 										console.log(entry.getKey() + ": " + entry.getValue().getAsString());
 									}
 								}
-							}catch(JsonSyntaxException e) {}
+							}catch(JsonSyntaxException e) {
+								e.printStackTrace();
+							}
 						}
 						return;
 					}

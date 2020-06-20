@@ -19,6 +19,7 @@ import java.io.File;
 
 import com.t07m.application.Application;
 import com.t07m.swing.console.ConsoleWindow;
+import com.t07m.synolvm.command.ReloadCommand;
 import com.t07m.synolvm.command.StopCommand;
 import com.t07m.synolvm.command.ViewDeleteCommand;
 import com.t07m.synolvm.command.ViewExportCommand;
@@ -31,6 +32,7 @@ import com.t07m.synolvm.process.RegistryHandler;
 import com.t07m.synolvm.process.ScreenHandler;
 import com.t07m.synolvm.process.SurveillanceStationFactory;
 import com.t07m.synolvm.process.WindowHandler;
+import com.t07m.synolvm.view.ViewManager;
 
 import lombok.Getter;
 import net.cubespace.Yamler.Config.InvalidConfigurationException;
@@ -44,9 +46,12 @@ public class SynoLVM extends Application{
 	private @Getter LVMConfig config;
 	private @Getter ViewConfigFactory viewConfigFactory;
 	private @Getter SurveillanceStationFactory surveillanceStationFactory;
+	
+	private @Getter ViewManager viewManager;
 
 	private @Getter ConsoleWindow console;
 
+	@SuppressWarnings("serial")
 	public void init() {
 		this.config = new LVMConfig();
 		try {
@@ -67,6 +72,7 @@ public class SynoLVM extends Application{
 		};
 		this.console.setup();
 		this.console.registerCommand(new StopCommand());
+		this.console.registerCommand(new ReloadCommand(this));
 		this.console.registerCommand(new ViewExportCommand(this));
 		this.console.registerCommand(new ViewDeleteCommand(this));
 		this.console.registerCommand(new ViewListCommand(this));
@@ -76,5 +82,7 @@ public class SynoLVM extends Application{
 		RegistryHandler registryHandler = new RegistryHandler();
 		this.viewConfigFactory = new ViewConfigFactory(this.config, registryHandler);
 		this.surveillanceStationFactory = new SurveillanceStationFactory(new File(this.config.getSurveillanceStationPath()), registryHandler, new LaunchHandler(new File("lib/Launch.exe")), new ScreenHandler(new File("lib/QueryScreen.exe")), new WindowHandler(new File("QueryWindow.exe")));
+		this.viewManager = new ViewManager(this);
+		this.registerService(viewManager);
 	}
 }

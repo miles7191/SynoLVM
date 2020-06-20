@@ -17,8 +17,12 @@ package com.t07m.synolvm.view;
 
 import java.util.concurrent.TimeUnit;
 
+import com.t07m.synolvm.SynoLVM;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig;
 import com.t07m.synolvm.process.SurveillanceStationFactory.SurveillanceStationClient;
+import com.t07m.synolvm.view.watcher.ScreenPixelWatcher;
+import com.t07m.synolvm.view.watcher.WindowLocationWatcher;
+import com.t07m.synolvm.view.watcher.WindowTitleWatcher;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,9 +35,38 @@ public class View {
 	private @Getter SurveillanceStationClient surveillanceStationClient;
 	private @Getter boolean valid;
 	
+	private ScreenPixelWatcher screenPixelWatcher;
+	private WindowLocationWatcher windowLocationWatcher;
+	private WindowTitleWatcher windowTitleWatcher;
+	
+	private @Getter long launchTime = -1;
+	
 	public View(ViewConfig config, SurveillanceStationClient client) {
 		this.viewConfig = config;
 		this.surveillanceStationClient = client;
+	}
+	
+	public boolean launch(SynoLVM lvm) {
+		boolean completed = surveillanceStationClient.launch(TimeUnit.SECONDS.toMillis(10), viewConfig.getMonitor(), viewConfig.getRegistry());
+		if(completed) {
+			launchTime = System.currentTimeMillis();
+			if(screenPixelWatcher == null)
+				screenPixelWatcher = new ScreenPixelWatcher(lvm, this);
+			if(windowLocationWatcher == null)
+				windowLocationWatcher = new WindowLocationWatcher(lvm, this);
+			if(windowTitleWatcher == null)
+				windowTitleWatcher = new WindowTitleWatcher(lvm, this);
+		}
+		return completed;
+	}
+	
+	public void stop() {
+		surveillanceStationClient.stop();
+		launchTime = -1;
+	}
+	
+	public ViewWatcher[] getViewWatchers() {
+		return new ViewWatcher[] {screenPixelWatcher, windowLocationWatcher, windowTitleWatcher};
 	}
 	
 	public boolean withinGracePeriod() {

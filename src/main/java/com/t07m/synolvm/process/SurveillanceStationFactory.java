@@ -17,14 +17,13 @@ package com.t07m.synolvm.process;
 
 import java.awt.Rectangle;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.t07m.synolvm.config.LVMConfig.ViewConfig.Registry;
 import com.t07m.synolvm.process.ScreenHandler.Screen;
 import com.t07m.synolvm.process.WindowHandler.Window;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -44,7 +43,7 @@ public class SurveillanceStationFactory {
 
 		private boolean running = false;
 		private ProcessHandle process;
-		private int monitor = Integer.MAX_VALUE;
+		private @Getter int monitor = Integer.MAX_VALUE;
 
 		private Object processLock = new Object();
 

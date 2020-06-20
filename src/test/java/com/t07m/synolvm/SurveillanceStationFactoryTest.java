@@ -49,13 +49,19 @@ class SurveillanceStationFactoryTest {
 
 		SurveillanceStationFactory ssf = new SurveillanceStationFactory(ss, rh, lh, sh, wh);
 		ExecutorService es = Executors.newWorkStealingPool();
-		for(int i = 0; i < 10; i++) {
+		for(int i = 0; i < 1; i++) {
 			Thread t = new Thread() {				
 				public void run() {
 					SurveillanceStationClient ssc = ssf.newSurveillanceStationClient();
 					if(vc != null && ssc.launch(TimeUnit.SECONDS.toMillis(10), 0, vc.getRegistry())) {
 						System.out.println(ssc.getTitle());
 						assert(ssc.getWindow() != null);
+						try {
+							Thread.sleep(2000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						ssc.stop();
 					}
 				}
