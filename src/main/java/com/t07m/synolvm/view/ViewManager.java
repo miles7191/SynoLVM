@@ -25,10 +25,13 @@ import java.util.concurrent.TimeUnit;
 import com.t07m.application.Service;
 import com.t07m.synolvm.SynoLVM;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig;
+import com.t07m.synolvm.process.WindowHandler.Window;
 
 public class ViewManager extends Service<SynoLVM>{
 
 	private ArrayList<View> views;
+
+	private View lastLaunch = null;
 
 	public ViewManager(SynoLVM app) {
 		super(app, TimeUnit.SECONDS.toMillis(1));
@@ -92,8 +95,15 @@ public class ViewManager extends Service<SynoLVM>{
 							}
 						}
 					}else if(v.getViewConfig().isEnabled() && v.getSurveillanceStationClient().screenAvailable(v.getViewConfig().getMonitor())) {
+						if(lastLaunch != null) {
+							Window w = lastLaunch.getSurveillanceStationClient().getWindow();
+							if(w != null && w.getTitle().equals("Synology Surveillance Station Client")) {
+								return;
+							}
+						}
 						app.getConsole().log("Launching View: " + v.getViewConfig().getName());
 						if(v.launch(app)) {
+							lastLaunch = v;
 							for(ViewWatcher vw : v.getViewWatchers()) {
 								if(vw != null) {
 									app.registerService(vw);
