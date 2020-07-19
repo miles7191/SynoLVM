@@ -15,6 +15,7 @@
  */
 package com.t07m.synolvm;
 
+import java.awt.Frame;
 import java.io.File;
 
 import com.t07m.application.Application;
@@ -78,6 +79,7 @@ public class SynoLVM extends Application{
 		this.console.registerCommand(new ViewListCommand(this));
 		this.console.registerCommand(new ViewSetCommand(this));
 		this.console.setLocationRelativeTo(null);
+		this.console.setState(Frame.ICONIFIED);
 		this.console.setVisible(true);
 		RegistryHandler registryHandler = new RegistryHandler();
 		this.viewConfigFactory = new ViewConfigFactory(this.config, registryHandler);
