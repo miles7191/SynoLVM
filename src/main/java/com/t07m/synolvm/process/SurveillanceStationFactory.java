@@ -136,7 +136,7 @@ public class SurveillanceStationFactory {
 						this.monitor = monitor;
 						Screen screen = getScreen();
 						if(screen != null) {
-							registry.setWinGeometry(screen.getX()+","+screen.getY()+",1280,660");
+							registry.setWinGeometry(screen.getX()+","+(screen.getY()+1)+",1280,720");
 							if(importRegistry(registry)) {
 								process = launchHandler.executeHandler(surveillanceStation);
 								long start = System.currentTimeMillis();
