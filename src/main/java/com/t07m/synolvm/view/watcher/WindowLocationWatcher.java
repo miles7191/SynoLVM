@@ -32,7 +32,7 @@ public class WindowLocationWatcher extends ViewWatcher {
 			synchronized(getView().getSurveillanceStationClient()) {
 				if(getView().getViewConfig().getMonitor() != getView().getSurveillanceStationClient().getMonitor() || !getView().getSurveillanceStationClient().isCorrectScreen()) {
 					getView().inValidate();
-					app.getConsole().log("View failed WindowLocationMonitor: " + getView().getViewConfig().getName());
+					app.getConsole().getLogger().info("View failed WindowLocationMonitor: " + getView().getViewConfig().getName());
 				}
 			}
 		}

@@ -27,7 +27,7 @@ public class StopCommand extends Command {
 	}
 	
 	public void process(OptionSet optionSet, ConsoleWindow console) {
-	    console.log("Closing application.");
+	    console.getLogger().info("Closing application.");
 	    console.closeRequested();
 	  }	
 }

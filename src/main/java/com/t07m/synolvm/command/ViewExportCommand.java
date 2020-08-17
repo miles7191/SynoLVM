@@ -65,7 +65,7 @@ public class ViewExportCommand extends Command{
 			List<ViewConfig> currentViews = new ArrayList<ViewConfig>(Arrays.asList(lvm.getConfig().getViewConfigurations()));
 			for(ViewConfig vc : currentViews) {
 				if(name.equalsIgnoreCase(vc.getName())) {
-					console.log("Found existing view with same name. Please delete existing view before exporting view with same name.");
+					console.getLogger().warning("Found existing view with same name. Please delete existing view before exporting view with same name.");
 					return;
 				}
 			}
@@ -79,12 +79,12 @@ public class ViewExportCommand extends Command{
 				config.setViewConfigurations(currentViews.toArray(new ViewConfig[currentViews.size()]));
 				try {
 					config.save();
-					console.log("Successfully exported view: " + vc.getName());
+					console.getLogger().info("Successfully exported view: " + vc.getName());
 				} catch (InvalidConfigurationException e) {
-					console.log("Warning! View Export was unable to save the configuration to disk. Changes will not persist through restart!");
+					console.getLogger().severe("Warning! View Export was unable to save the configuration to disk. Changes will not persist through restart!");
 				}
 			}else {
-				console.log("Unable to export view!");
+				console.getLogger().warning("Unable to export view!");
 			}
 		}
 	}

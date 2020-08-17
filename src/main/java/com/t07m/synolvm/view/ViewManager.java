@@ -62,7 +62,7 @@ public class ViewManager extends Service<SynoLVM>{
 					if(!found) {
 						itr.remove();
 						cleanupRemovedView(v);
-						app.getConsole().log("Unloaded View: " + v.getViewConfig().getName());
+						app.getConsole().getLogger().info("Unloaded View: " + v.getViewConfig().getName());
 					}
 				}
 				for(ViewConfig vc : viewConfigs) {
@@ -80,17 +80,17 @@ public class ViewManager extends Service<SynoLVM>{
 			for(View v : views) {
 				if(foundInvalid) {
 					if(v.getSurveillanceStationClient().isRunning()) {
-						app.getConsole().log("Killing View For Priority View: " + v.getViewConfig().getName());
+						app.getConsole().getLogger().info("Killing View For Priority View: " + v.getViewConfig().getName());
 						v.stop();
 					}
 				}else {
 					if(v.getSurveillanceStationClient().isRunning()) {
 						if(!v.getViewConfig().isEnabled()) {
-							app.getConsole().log("View No Longer Enabled. Killing View: " + v.getViewConfig().getName());
+							app.getConsole().getLogger().info("View No Longer Enabled. Killing View: " + v.getViewConfig().getName());
 							v.stop();
 						}
 						if(!v.isValid() && !v.withinGracePeriod()) {
-							app.getConsole().log("View Invalidated. Killing View: " + v.getViewConfig().getName());
+							app.getConsole().getLogger().info("View Invalidated. Killing View: " + v.getViewConfig().getName());
 							v.stop();
 							if(v.getSurveillanceStationClient().screenAvailable(v.getViewConfig().getMonitor())) {
 								foundInvalid = true;
@@ -105,7 +105,7 @@ public class ViewManager extends Service<SynoLVM>{
 								}
 							}
 						}
-						app.getConsole().log("Launching View: " + v.getViewConfig().getName());
+						app.getConsole().getLogger().info("Launching View: " + v.getViewConfig().getName());
 						if(v.launch(app)) {
 							lastLaunch = v;
 							for(ViewWatcher vw : v.getViewWatchers()) {
@@ -127,12 +127,12 @@ public class ViewManager extends Service<SynoLVM>{
 				if(v.getViewConfig().equals(vc)) {
 					return;
 				}else if(v.getViewConfig().getName().equalsIgnoreCase(vc.getName())) {
-					app.getConsole().log("Attempted to load view with duplicate name! " + vc.getName() + " : " + v.getViewConfig().getName());
+					app.getConsole().getLogger().info("Attempted to load view with duplicate name! " + vc.getName() + " : " + v.getViewConfig().getName());
 					return;
 				}
 			}
 			views.add(new View(vc, app.getSurveillanceStationFactory().newSurveillanceStationClient()));
-			app.getConsole().log("Loaded View: " + vc.getName());
+			app.getConsole().getLogger().info("Loaded View: " + vc.getName());
 		}
 	}
 

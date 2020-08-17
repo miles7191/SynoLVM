@@ -54,10 +54,10 @@ public class ViewListCommand extends Command {
 				String name = (String)optionSet.valueOf("view");
 				for(ViewConfig vc : views) {
 					if(name.equalsIgnoreCase(vc.getName())) {
-						console.log("Name: " + vc.getName());
-						console.log("Enabled: " + vc.isEnabled());
-						console.log("Priority: " + vc.getPriority());
-						console.log("Monitor: " + vc.getMonitor());
+						console.getLogger().info("Name: " + vc.getName());
+						console.getLogger().info("Enabled: " + vc.isEnabled());
+						console.getLogger().info("Priority: " + vc.getPriority());
+						console.getLogger().info("Monitor: " + vc.getMonitor());
 						if(vc.getRegistry().getLoginHistory() != null) {
 							try {
 								Gson gson = new Gson();
@@ -65,7 +65,7 @@ public class ViewListCommand extends Command {
 								JsonObject json = jsonArray.get(0).getAsJsonObject();
 								for(Entry<String, JsonElement> entry : json.entrySet()) {
 									if(entry.getValue() != null && entry.getValue().getAsString().length() > 0) {
-										console.log(entry.getKey() + ": " + entry.getValue().getAsString());
+										console.getLogger().info(entry.getKey() + ": " + entry.getValue().getAsString());
 									}
 								}
 							}catch(JsonSyntaxException e) {
@@ -75,14 +75,14 @@ public class ViewListCommand extends Command {
 						return;
 					}
 				}
-				console.log("Unable to find view: " + name);
+				console.getLogger().warning("Unable to find view: " + name);
 			}else {
 				if(views.length > 0) {
 					for(ViewConfig vc : views) {
-						console.log(vc.getName() + " - " + (vc.isEnabled() ? "Enabled" : "Disabled") + " P:" +vc.getPriority());
+						console.getLogger().info(vc.getName() + " - " + (vc.isEnabled() ? "Enabled" : "Disabled") + " P:" +vc.getPriority());
 					}
 				}else {
-					console.log("No views loaded.");
+					console.getLogger().info("No views loaded.");
 				}
 			}
 		}

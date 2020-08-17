@@ -35,9 +35,9 @@ public class ReloadCommand extends Command {
 	public void process(OptionSet optionSet, ConsoleWindow console) {
 		try {
 			lvm.getConfig().reload();
-			console.log("Configuration Reloaded");
+			console.getLogger().info("Configuration Reloaded");
 		} catch (InvalidConfigurationException e) {
-			console.log(e.getMessage());
+			console.getLogger().info(e.getMessage());
 			e.printStackTrace();
 		}
 	}

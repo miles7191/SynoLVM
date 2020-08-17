@@ -54,14 +54,14 @@ public class ViewDeleteCommand extends Command {
 					config.setViewConfigurations(currentViews.toArray(new ViewConfig[currentViews.size()]));
 					try {
 						config.save();
-						console.log("Successfully deleted view: " + vc.getName());
+						console.getLogger().info("Successfully deleted view: " + vc.getName());
 					} catch (InvalidConfigurationException e) {
-						console.log("Warning! View Export was unable to save the configuration to disk. Changes will not persist through restart!");
+						console.getLogger().severe("View Export was unable to save the configuration to disk. Changes will not persist through restart!");
 					}
 					return;
 				}
 			}
-			console.log("Unable to find view: " + name);
+			console.getLogger().warning("Unable to find view: " + name);
 		}
 	}
 	

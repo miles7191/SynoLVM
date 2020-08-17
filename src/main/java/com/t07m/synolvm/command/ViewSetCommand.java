@@ -62,30 +62,30 @@ public class ViewSetCommand extends Command {
 					if(name.equalsIgnoreCase(vc.getName())) {
 						if(optionSet.has("enable")) {
 							vc.setEnabled(true);
-							console.log(vc.getName() + ": Enabled");
+							console.getLogger().info(vc.getName() + ": Enabled");
 						}else if(optionSet.has("disable")) {
 							vc.setEnabled(false);
-							console.log(vc.getName() + ": Disabled");
+							console.getLogger().info(vc.getName() + ": Disabled");
 						}
 						if(optionSet.has("monitor")) {
 							vc.setMonitor(((Integer)optionSet.valueOf("monitor")).intValue());
-							console.log(vc.getName() + " Monitor: " + vc.getMonitor());
+							console.getLogger().info(vc.getName() + " Monitor: " + vc.getMonitor());
 						}
 						if(optionSet.has("priority")) {
 							vc.setPriority(((Integer)optionSet.valueOf("priority")).intValue());
-							console.log(vc.getName() + " Priority: " + vc.getPriority());
+							console.getLogger().info(vc.getName() + " Priority: " + vc.getPriority());
 						}
 						try {
 							config.save();
-							console.log("Successfully modified view: " + vc.getName());
+							console.getLogger().info("Successfully modified view: " + vc.getName());
 						} catch (InvalidConfigurationException e) {
-							console.log("Warning! View Set was unable to save the configuration to disk. Changes will not persist through restart!");
+							console.getLogger().severe("View Set was unable to save the configuration to disk. Changes will not persist through restart!");
 						}
 						return;
 					}
 				}
 			}
-			console.log("Unable to find view.");
+			console.getLogger().warning("Unable to find view.");
 		}
 	}
 
