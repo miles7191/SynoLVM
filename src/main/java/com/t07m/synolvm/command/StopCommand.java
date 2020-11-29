@@ -15,8 +15,8 @@
  */
 package com.t07m.synolvm.command;
 
-import com.t07m.swing.console.Command;
-import com.t07m.swing.console.ConsoleWindow;
+import com.t07m.console.Command;
+import com.t07m.console.Console;
 
 import joptsimple.OptionSet;
 
@@ -26,8 +26,8 @@ public class StopCommand extends Command {
 		super("Stop");
 	}
 	
-	public void process(OptionSet optionSet, ConsoleWindow console) {
+	public void process(OptionSet optionSet, Console console) {
 	    console.getLogger().info("Closing application.");
-	    console.closeRequested();
+	    console.close();
 	  }	
 }

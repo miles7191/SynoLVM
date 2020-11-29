@@ -17,8 +17,8 @@ package com.t07m.synolvm.command;
 
 import java.util.Arrays;
 
-import com.t07m.swing.console.Command;
-import com.t07m.swing.console.ConsoleWindow;
+import com.t07m.console.Command;
+import com.t07m.console.Console;
 import com.t07m.synolvm.SynoLVM;
 import com.t07m.synolvm.config.LVMConfig;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig;
@@ -53,7 +53,7 @@ public class ViewSetCommand extends Command {
 		setOptionParser(op);
 	}
 
-	public void process(OptionSet optionSet, ConsoleWindow console) {
+	public void process(OptionSet optionSet, Console console) {
 		if(optionSet.has("view")) {
 			String name = (String)optionSet.valueOf("view");
 			LVMConfig config = lvm.getConfig();

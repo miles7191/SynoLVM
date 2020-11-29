@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.t07m.swing.console.Command;
-import com.t07m.swing.console.ConsoleWindow;
+import com.t07m.console.Command;
+import com.t07m.console.Console;
 import com.t07m.synolvm.SynoLVM;
 import com.t07m.synolvm.config.LVMConfig;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig;
@@ -43,7 +43,7 @@ public class ViewDeleteCommand extends Command {
 		setOptionParser(op);
 	}
 
-	public void process(OptionSet optionSet, ConsoleWindow console) {
+	public void process(OptionSet optionSet, Console console) {
 		String name = (String)optionSet.valueOf("view");
 		LVMConfig config = lvm.getConfig();
 		synchronized(config) {

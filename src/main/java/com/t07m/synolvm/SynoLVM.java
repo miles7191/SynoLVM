@@ -67,7 +67,7 @@ public class SynoLVM extends Application{
 			System.exit(-1);
 		}
 		this.console = new ConsoleWindow("SynoLVM") {
-			public void closeRequested() {
+			public void close() {
 				stop();
 			}
 		};

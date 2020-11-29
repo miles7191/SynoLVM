@@ -23,8 +23,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.t07m.swing.console.Command;
-import com.t07m.swing.console.ConsoleWindow;
+import com.t07m.console.Command;
+import com.t07m.console.Console;
 import com.t07m.synolvm.SynoLVM;
 import com.t07m.synolvm.config.LVMConfig;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig;
@@ -46,7 +46,7 @@ public class ViewListCommand extends Command {
 		setOptionParser(op);
 	}
 
-	public void process(OptionSet optionSet, ConsoleWindow console) {
+	public void process(OptionSet optionSet, Console console) {
 		LVMConfig config = lvm.getConfig();
 		synchronized(config) {
 			ViewConfig[] views = config.getViewConfigurations();
