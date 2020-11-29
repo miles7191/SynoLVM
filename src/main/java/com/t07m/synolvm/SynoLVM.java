@@ -41,7 +41,7 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 public class SynoLVM extends Application{
 
 	public static void main(String[] args) {
-		new SynoLVM();
+		new SynoLVM().start();
 	}
 
 	private @Getter LVMConfig config;
