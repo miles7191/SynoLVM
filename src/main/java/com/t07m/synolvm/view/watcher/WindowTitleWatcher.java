@@ -36,7 +36,7 @@ public class WindowTitleWatcher extends ViewWatcher{
 					return;
 				}else {
 					getView().inValidate();
-					app.getConsole().getLogger().info("View failed WindowTitleMonitor: " + getView().getViewConfig().getName());
+					getApp().getConsole().getLogger().info("View failed WindowTitleMonitor: " + getView().getViewConfig().getName());
 				}
 			}
 		}

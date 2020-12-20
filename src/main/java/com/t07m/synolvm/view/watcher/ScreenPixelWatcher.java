@@ -56,7 +56,7 @@ public class ScreenPixelWatcher extends ViewWatcher {
 							}
 							lastPass = null;
 							getView().inValidate();
-							app.getConsole().getLogger().info("View failed ScreenPixelWatcher: " + getView().getViewConfig().getName());
+							getApp().getConsole().getLogger().info("View failed ScreenPixelWatcher: " + getView().getViewConfig().getName());
 							
 						}
 					} catch (AWTException e) {}
