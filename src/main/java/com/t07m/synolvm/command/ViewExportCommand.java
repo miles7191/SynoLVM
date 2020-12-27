@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.t07m.console.Command;
 import com.t07m.console.Console;
 import com.t07m.synolvm.SynoLVM;
@@ -31,6 +34,8 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 
 public class ViewExportCommand extends Command{
 
+	private static Logger logger = LoggerFactory.getLogger(ViewExportCommand.class);
+	
 	private final SynoLVM lvm;
 
 	public ViewExportCommand(SynoLVM lvm) {
@@ -65,7 +70,7 @@ public class ViewExportCommand extends Command{
 			List<ViewConfig> currentViews = new ArrayList<ViewConfig>(Arrays.asList(lvm.getConfig().getViewConfigurations()));
 			for(ViewConfig vc : currentViews) {
 				if(name.equalsIgnoreCase(vc.getName())) {
-					console.getLogger().warning("Found existing view with same name. Please delete existing view before exporting view with same name.");
+					logger.warn("Found existing view with same name. Please delete existing view before exporting view with same name.");
 					return;
 				}
 			}
@@ -79,12 +84,12 @@ public class ViewExportCommand extends Command{
 				config.setViewConfigurations(currentViews.toArray(new ViewConfig[currentViews.size()]));
 				try {
 					config.save();
-					console.getLogger().info("Successfully exported view: " + vc.getName());
+					logger.info("Successfully exported view: " + vc.getName());
 				} catch (InvalidConfigurationException e) {
-					console.getLogger().severe("Warning! View Export was unable to save the configuration to disk. Changes will not persist through restart!");
+					logger.error("Warning! View Export was unable to save the configuration to disk. Changes will not persist through restart!");
 				}
 			}else {
-				console.getLogger().warning("Unable to export view!");
+				logger.warn("Unable to export view!");
 			}
 		}
 	}

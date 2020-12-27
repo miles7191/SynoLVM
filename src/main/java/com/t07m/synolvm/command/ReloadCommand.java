@@ -15,6 +15,9 @@
  */
 package com.t07m.synolvm.command;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.t07m.console.Command;
 import com.t07m.console.Console;
 import com.t07m.synolvm.SynoLVM;
@@ -24,6 +27,8 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 
 public class ReloadCommand extends Command {
 
+	private static Logger logger = LoggerFactory.getLogger(ReloadCommand.class);
+	
 	private final SynoLVM lvm;
 
 	public ReloadCommand(SynoLVM lvm) {
@@ -35,9 +40,9 @@ public class ReloadCommand extends Command {
 	public void process(OptionSet optionSet, Console console) {
 		try {
 			lvm.getConfig().reload();
-			console.getLogger().info("Configuration Reloaded");
+			logger.info("Configuration Reloaded");
 		} catch (InvalidConfigurationException e) {
-			console.getLogger().info(e.getMessage());
+			logger.info(e.getMessage());
 			e.printStackTrace();
 		}
 	}

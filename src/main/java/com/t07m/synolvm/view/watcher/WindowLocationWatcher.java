@@ -17,12 +17,17 @@ package com.t07m.synolvm.view.watcher;
 
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.t07m.synolvm.SynoLVM;
 import com.t07m.synolvm.view.View;
 import com.t07m.synolvm.view.ViewWatcher;
 
 public class WindowLocationWatcher extends ViewWatcher {
 
+	private static Logger logger = LoggerFactory.getLogger(WindowLocationWatcher.class);
+	
 	public WindowLocationWatcher(SynoLVM app, View view) {
 		super(app, TimeUnit.SECONDS.toMillis(10), view);
 	}
@@ -32,7 +37,7 @@ public class WindowLocationWatcher extends ViewWatcher {
 			synchronized(getView().getSurveillanceStationClient()) {
 				if(getView().getViewConfig().getMonitor() != getView().getSurveillanceStationClient().getMonitor() || !getView().getSurveillanceStationClient().isCorrectScreen()) {
 					getView().inValidate();
-					getApp().getConsole().getLogger().info("View failed WindowLocationMonitor: " + getView().getViewConfig().getName());
+					logger.info("View failed WindowLocationMonitor: " + getView().getViewConfig().getName());
 				}
 			}
 		}

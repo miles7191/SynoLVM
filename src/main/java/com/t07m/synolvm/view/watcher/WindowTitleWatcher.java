@@ -17,6 +17,9 @@ package com.t07m.synolvm.view.watcher;
 
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.t07m.synolvm.SynoLVM;
 import com.t07m.synolvm.process.WindowHandler.Window;
 import com.t07m.synolvm.view.View;
@@ -24,6 +27,8 @@ import com.t07m.synolvm.view.ViewWatcher;
 
 public class WindowTitleWatcher extends ViewWatcher{
 
+	private static Logger logger = LoggerFactory.getLogger(WindowTitleWatcher.class);
+	
 	public WindowTitleWatcher(SynoLVM app, View view) {
 		super(app, TimeUnit.SECONDS.toMillis(10), view);
 	}
@@ -36,7 +41,7 @@ public class WindowTitleWatcher extends ViewWatcher{
 					return;
 				}else {
 					getView().inValidate();
-					getApp().getConsole().getLogger().info("View failed WindowTitleMonitor: " + getView().getViewConfig().getName());
+					logger.info("View failed WindowTitleMonitor: " + getView().getViewConfig().getName());
 				}
 			}
 		}

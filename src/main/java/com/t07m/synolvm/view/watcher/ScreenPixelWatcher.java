@@ -20,6 +20,9 @@ import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.t07m.synolvm.SynoLVM;
 import com.t07m.synolvm.process.ScreenHandler.Screen;
 import com.t07m.synolvm.view.View;
@@ -27,6 +30,8 @@ import com.t07m.synolvm.view.ViewWatcher;
 
 public class ScreenPixelWatcher extends ViewWatcher {
 
+	private static Logger logger = LoggerFactory.getLogger(ScreenPixelWatcher.class);
+	
 	private BufferedImage lastPass = null;
 
 	public ScreenPixelWatcher(SynoLVM app, View view) {
@@ -56,7 +61,7 @@ public class ScreenPixelWatcher extends ViewWatcher {
 							}
 							lastPass = null;
 							getView().inValidate();
-							getApp().getConsole().getLogger().info("View failed ScreenPixelWatcher: " + getView().getViewConfig().getName());
+							logger.info("View failed ScreenPixelWatcher: " + getView().getViewConfig().getName());
 							
 						}
 					} catch (AWTException e) {}

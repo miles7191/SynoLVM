@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.t07m.console.Command;
 import com.t07m.console.Console;
 import com.t07m.synolvm.SynoLVM;
@@ -31,6 +34,8 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 
 public class ViewDeleteCommand extends Command {
 
+	private static Logger logger = LoggerFactory.getLogger(ViewDeleteCommand.class);
+	
 	private final SynoLVM lvm;
 	
 	public ViewDeleteCommand(SynoLVM lvm) {
@@ -54,14 +59,14 @@ public class ViewDeleteCommand extends Command {
 					config.setViewConfigurations(currentViews.toArray(new ViewConfig[currentViews.size()]));
 					try {
 						config.save();
-						console.getLogger().info("Successfully deleted view: " + vc.getName());
+						logger.info("Successfully deleted view: " + vc.getName());
 					} catch (InvalidConfigurationException e) {
-						console.getLogger().severe("View Export was unable to save the configuration to disk. Changes will not persist through restart!");
+						logger.error("View Export was unable to save the configuration to disk. Changes will not persist through restart!");
 					}
 					return;
 				}
 			}
-			console.getLogger().warning("Unable to find view: " + name);
+			logger.warn("Unable to find view: " + name);
 		}
 	}
 	

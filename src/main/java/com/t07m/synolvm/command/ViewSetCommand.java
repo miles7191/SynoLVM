@@ -17,6 +17,9 @@ package com.t07m.synolvm.command;
 
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.t07m.console.Command;
 import com.t07m.console.Console;
 import com.t07m.synolvm.SynoLVM;
@@ -29,6 +32,8 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 
 public class ViewSetCommand extends Command {
 
+	private static Logger logger = LoggerFactory.getLogger(ViewSetCommand.class);
+	
 	private final SynoLVM lvm;
 
 	public ViewSetCommand(SynoLVM lvm) {
@@ -62,30 +67,30 @@ public class ViewSetCommand extends Command {
 					if(name.equalsIgnoreCase(vc.getName())) {
 						if(optionSet.has("enable")) {
 							vc.setEnabled(true);
-							console.getLogger().info(vc.getName() + ": Enabled");
+							logger.info(vc.getName() + ": Enabled");
 						}else if(optionSet.has("disable")) {
 							vc.setEnabled(false);
-							console.getLogger().info(vc.getName() + ": Disabled");
+							logger.info(vc.getName() + ": Disabled");
 						}
 						if(optionSet.has("monitor")) {
 							vc.setMonitor(((Integer)optionSet.valueOf("monitor")).intValue());
-							console.getLogger().info(vc.getName() + " Monitor: " + vc.getMonitor());
+							logger.info(vc.getName() + " Monitor: " + vc.getMonitor());
 						}
 						if(optionSet.has("priority")) {
 							vc.setPriority(((Integer)optionSet.valueOf("priority")).intValue());
-							console.getLogger().info(vc.getName() + " Priority: " + vc.getPriority());
+							logger.info(vc.getName() + " Priority: " + vc.getPriority());
 						}
 						try {
 							config.save();
-							console.getLogger().info("Successfully modified view: " + vc.getName());
+							logger.info("Successfully modified view: " + vc.getName());
 						} catch (InvalidConfigurationException e) {
-							console.getLogger().severe("View Set was unable to save the configuration to disk. Changes will not persist through restart!");
+							logger.error("View Set was unable to save the configuration to disk. Changes will not persist through restart!");
 						}
 						return;
 					}
 				}
 			}
-			console.getLogger().warning("Unable to find view.");
+			logger.warn("Unable to find view.");
 		}
 	}
 

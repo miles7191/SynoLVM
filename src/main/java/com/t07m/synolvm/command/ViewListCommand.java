@@ -18,6 +18,9 @@ package com.t07m.synolvm.command;
 import java.util.Arrays;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -34,6 +37,8 @@ import joptsimple.OptionSet;
 
 public class ViewListCommand extends Command {
 
+	private static Logger logger = LoggerFactory.getLogger(ViewListCommand.class);
+	
 	private final SynoLVM lvm;
 
 	public ViewListCommand(SynoLVM lvm) {
@@ -54,10 +59,10 @@ public class ViewListCommand extends Command {
 				String name = (String)optionSet.valueOf("view");
 				for(ViewConfig vc : views) {
 					if(name.equalsIgnoreCase(vc.getName())) {
-						console.getLogger().info("Name: " + vc.getName());
-						console.getLogger().info("Enabled: " + vc.isEnabled());
-						console.getLogger().info("Priority: " + vc.getPriority());
-						console.getLogger().info("Monitor: " + vc.getMonitor());
+						logger.info("Name: " + vc.getName() + System.lineSeparator() +
+								"Enabled: " + vc.isEnabled() + System.lineSeparator() +
+								"Priority: " + vc.getPriority() + System.lineSeparator() +
+								"Monitor: " + vc.getMonitor());
 						if(vc.getRegistry().getLoginHistory() != null) {
 							try {
 								Gson gson = new Gson();
@@ -65,7 +70,7 @@ public class ViewListCommand extends Command {
 								JsonObject json = jsonArray.get(0).getAsJsonObject();
 								for(Entry<String, JsonElement> entry : json.entrySet()) {
 									if(entry.getValue() != null && entry.getValue().getAsString().length() > 0) {
-										console.getLogger().info(entry.getKey() + ": " + entry.getValue().getAsString());
+										logger.info(entry.getKey() + ": " + entry.getValue().getAsString());
 									}
 								}
 							}catch(JsonSyntaxException e) {
@@ -75,14 +80,14 @@ public class ViewListCommand extends Command {
 						return;
 					}
 				}
-				console.getLogger().warning("Unable to find view: " + name);
+				logger.warn("Unable to find view: " + name);
 			}else {
 				if(views.length > 0) {
 					for(ViewConfig vc : views) {
-						console.getLogger().info(vc.getName() + " - " + (vc.isEnabled() ? "Enabled" : "Disabled") + " P:" +vc.getPriority());
+						logger.info(vc.getName() + " - " + (vc.isEnabled() ? "Enabled" : "Disabled") + " P:" +vc.getPriority());
 					}
 				}else {
-					console.getLogger().info("No views loaded.");
+					logger.info("No views loaded.");
 				}
 			}
 		}

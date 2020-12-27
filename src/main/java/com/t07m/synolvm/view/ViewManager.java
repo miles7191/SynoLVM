@@ -22,6 +22,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.t07m.application.Service;
 import com.t07m.synolvm.SynoLVM;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig;
@@ -29,6 +32,8 @@ import com.t07m.synolvm.process.WindowHandler.Window;
 
 public class ViewManager extends Service<SynoLVM>{
 
+	private static Logger logger = LoggerFactory.getLogger(ViewManager.class);
+	
 	private ArrayList<View> views;
 
 	private View lastLaunch = null;
@@ -62,7 +67,7 @@ public class ViewManager extends Service<SynoLVM>{
 					if(!found) {
 						itr.remove();
 						cleanupRemovedView(v);
-						getApp().getConsole().getLogger().info("Unloaded View: " + v.getViewConfig().getName());
+						logger.info("Unloaded View: " + v.getViewConfig().getName());
 					}
 				}
 				for(ViewConfig vc : viewConfigs) {
@@ -80,17 +85,17 @@ public class ViewManager extends Service<SynoLVM>{
 			for(View v : views) {
 				if(foundInvalid) {
 					if(v.getSurveillanceStationClient().isRunning()) {
-						getApp().getConsole().getLogger().info("Killing View For Priority View: " + v.getViewConfig().getName());
+						logger.info("Killing View For Priority View: " + v.getViewConfig().getName());
 						v.stop();
 					}
 				}else {
 					if(v.getSurveillanceStationClient().isRunning()) {
 						if(!v.getViewConfig().isEnabled()) {
-							getApp().getConsole().getLogger().info("View No Longer Enabled. Killing View: " + v.getViewConfig().getName());
+							logger.info("View No Longer Enabled. Killing View: " + v.getViewConfig().getName());
 							v.stop();
 						}
 						if(!v.isValid() && !v.withinGracePeriod()) {
-							getApp().getConsole().getLogger().info("View Invalidated. Killing View: " + v.getViewConfig().getName());
+							logger.info("View Invalidated. Killing View: " + v.getViewConfig().getName());
 							v.stop();
 							if(v.getSurveillanceStationClient().screenAvailable(v.getViewConfig().getMonitor())) {
 								foundInvalid = true;
@@ -105,7 +110,7 @@ public class ViewManager extends Service<SynoLVM>{
 								}
 							}
 						}
-						getApp().getConsole().getLogger().info("Launching View: " + v.getViewConfig().getName());
+						logger.info("Launching View: " + v.getViewConfig().getName());
 						if(v.launch(getApp())) {
 							lastLaunch = v;
 							for(ViewWatcher vw : v.getViewWatchers()) {
@@ -127,12 +132,12 @@ public class ViewManager extends Service<SynoLVM>{
 				if(v.getViewConfig().equals(vc)) {
 					return;
 				}else if(v.getViewConfig().getName().equalsIgnoreCase(vc.getName())) {
-					getApp().getConsole().getLogger().info("Attempted to load view with duplicate name! " + vc.getName() + " : " + v.getViewConfig().getName());
+					logger.info("Attempted to load view with duplicate name! " + vc.getName() + " : " + v.getViewConfig().getName());
 					return;
 				}
 			}
 			views.add(new View(vc, getApp().getSurveillanceStationFactory().newSurveillanceStationClient()));
-			getApp().getConsole().getLogger().info("Loaded View: " + vc.getName());
+			logger.info("Loaded View: " + vc.getName());
 		}
 	}
 
