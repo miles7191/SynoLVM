@@ -40,7 +40,15 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 public class SynoLVM extends Application{
 
 	public static void main(String[] args) {
-		new SynoLVM().start();
+		boolean gui = true;
+		if(args.length > 0) {
+			for(String arg : args) {
+				if(arg.equalsIgnoreCase("-nogui")) {
+					gui = false;
+				}
+			}
+		}
+		new SynoLVM(gui).start();
 	}
 
 	private @Getter LVMConfig config;
@@ -49,8 +57,10 @@ public class SynoLVM extends Application{
 	
 	private @Getter ViewManager viewManager;
 
-	private @Getter ConsoleWindow console;
-
+	public SynoLVM(boolean gui) {
+		super(gui, "SynoLVM");
+	}
+	
 	@SuppressWarnings("serial")
 	public void init() {
 		this.config = new LVMConfig();
@@ -65,21 +75,15 @@ public class SynoLVM extends Application{
 			} catch (InterruptedException e1) {}
 			System.exit(-1);
 		}
-		this.console = new ConsoleWindow("SynoLVM") {
-			public void close() {
-				stop();
-			}
-		};
-		this.console.setup();
-		this.console.registerCommands(
+		this.getConsole().registerCommands(
 				new ReloadCommand(this),
 				new ViewExportCommand(this),
 				new ViewDeleteCommand(this),
 				new ViewListCommand(this),
 				new ViewSetCommand(this));
-		this.console.setLocationRelativeTo(null);
-		this.console.setState(Frame.ICONIFIED);
-		this.console.setVisible(true);
+		if(this.getConsole() instanceof ConsoleWindow) {
+			((ConsoleWindow)(this.getConsole())).setState(Frame.ICONIFIED);
+		}
 		RegistryHandler registryHandler = new RegistryHandler();
 		this.viewConfigFactory = new ViewConfigFactory(this.config, registryHandler);
 		this.surveillanceStationFactory = new SurveillanceStationFactory(new File(this.config.getSurveillanceStationPath()), registryHandler, new LaunchHandler(new File("lib/Launch.exe")), new ScreenHandler(new File("lib/QueryScreen.exe")), new WindowHandler(new File("lib/QueryWindow.exe")));

@@ -35,11 +35,6 @@
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
   	<dependency>
-  		<groupId>com.t07m.swing.console</groupId>
-  		<artifactId>SwingConsole</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
-  	</dependency>
-  	<dependency>
   		<groupId>com.t07m.config.yaml</groupId>
   		<artifactId>YamlConfiguration</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
