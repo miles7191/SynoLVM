@@ -15,23 +15,19 @@
  */
 package com.t07m.synolvm;
 
-import java.io.File;
-
 import org.junit.jupiter.api.Test;
 
-import com.t07m.synolvm.process.ScreenHandler;
-import com.t07m.synolvm.process.ScreenHandler.Screen;
+import com.t07m.synolvm.system.ScreenHandler;
+import com.t07m.synolvm.system.ScreenHandler.Screen;
 
 class ScreenHandlerTest {
-
+	
 	@Test
-	void test() {
-		ScreenHandler sh = new ScreenHandler(new File("lib/QueryScreen.exe"));
-		Screen[] screens = sh.queryScreens();
-		for(Screen s : screens) {
+	void testNew() {
+		Screen[] screens = ScreenHandler.queryScreens();
+		for(ScreenHandler.Screen s : screens) {
 			System.out.println(s.toString());
 		}
 		assert(screens.length > 0);
 	}
-
 }

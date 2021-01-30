@@ -15,19 +15,17 @@
  */
 package com.t07m.synolvm;
 
-import java.io.File;
-
 import org.junit.jupiter.api.Test;
 
-import com.t07m.synolvm.process.WindowHandler;
-import com.t07m.synolvm.process.WindowHandler.Window;
+import com.t07m.synolvm.system.WindowHandler;
+import com.t07m.synolvm.system.WindowHandler.Window;
+
 
 class WindowHandlerTest {
 
 	@Test
 	void test() {
-		WindowHandler wh = new WindowHandler(new File("lib/QueryWindow.exe"));
-		Window w = wh.queryWindow(13992);
+		Window w = WindowHandler.queryWindow(1704);
 		System.out.println(w.toString());
 		assert(w != null);
 	}

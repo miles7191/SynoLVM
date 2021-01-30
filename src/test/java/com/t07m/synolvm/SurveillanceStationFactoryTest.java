@@ -29,9 +29,7 @@ import com.t07m.synolvm.config.LVMConfig.ViewConfig;
 import com.t07m.synolvm.config.ViewConfigFactory;
 import com.t07m.synolvm.process.LaunchHandler;
 import com.t07m.synolvm.process.RegistryHandler;
-import com.t07m.synolvm.process.ScreenHandler;
 import com.t07m.synolvm.process.SurveillanceStationFactory;
-import com.t07m.synolvm.process.WindowHandler;
 import com.t07m.synolvm.process.SurveillanceStationFactory.SurveillanceStationClient;
 
 class SurveillanceStationFactoryTest {
@@ -41,13 +39,11 @@ class SurveillanceStationFactoryTest {
 		File ss = new File("C:\\Program Files\\Synology\\SynologySurveillanceStationClient\\bin\\SynologySurveillanceStationClient.exe");
 		RegistryHandler rh = new RegistryHandler();
 		LaunchHandler lh = new LaunchHandler(new File("lib/Launch.exe"));
-		ScreenHandler sh = new ScreenHandler(new File("lib/QueryScreen.exe"));
-		WindowHandler wh = new WindowHandler(new File("lib/QueryWindow.exe"));
 		LVMConfig config = new LVMConfig();
 		ViewConfigFactory vcf = new ViewConfigFactory(config, rh);
 		ViewConfig vc = vcf.loadNewViewConfig();
 
-		SurveillanceStationFactory ssf = new SurveillanceStationFactory(ss, rh, lh, sh, wh);
+		SurveillanceStationFactory ssf = new SurveillanceStationFactory(ss, rh, lh);
 		ExecutorService es = Executors.newWorkStealingPool();
 		for(int i = 0; i < 1; i++) {
 			Thread t = new Thread() {				

@@ -29,9 +29,8 @@ import com.t07m.synolvm.config.LVMConfig;
 import com.t07m.synolvm.config.ViewConfigFactory;
 import com.t07m.synolvm.process.LaunchHandler;
 import com.t07m.synolvm.process.RegistryHandler;
-import com.t07m.synolvm.process.ScreenHandler;
 import com.t07m.synolvm.process.SurveillanceStationFactory;
-import com.t07m.synolvm.process.WindowHandler;
+import com.t07m.synolvm.system.WindowHandler;
 import com.t07m.synolvm.view.ViewManager;
 
 import lombok.Getter;
@@ -86,7 +85,7 @@ public class SynoLVM extends Application{
 		}
 		RegistryHandler registryHandler = new RegistryHandler();
 		this.viewConfigFactory = new ViewConfigFactory(this.config, registryHandler);
-		this.surveillanceStationFactory = new SurveillanceStationFactory(new File(this.config.getSurveillanceStationPath()), registryHandler, new LaunchHandler(new File("lib/Launch.exe")), new ScreenHandler(new File("lib/QueryScreen.exe")), new WindowHandler(new File("lib/QueryWindow.exe")));
+		this.surveillanceStationFactory = new SurveillanceStationFactory(new File(this.config.getSurveillanceStationPath()), registryHandler, new LaunchHandler(new File("lib/Launch.exe")));
 		this.viewManager = new ViewManager(this);
 		this.registerService(viewManager);
 	}

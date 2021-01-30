@@ -20,8 +20,10 @@ import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import com.t07m.synolvm.config.LVMConfig.ViewConfig.Registry;
-import com.t07m.synolvm.process.ScreenHandler.Screen;
-import com.t07m.synolvm.process.WindowHandler.Window;
+import com.t07m.synolvm.system.ScreenHandler;
+import com.t07m.synolvm.system.ScreenHandler.Screen;
+import com.t07m.synolvm.system.WindowHandler;
+import com.t07m.synolvm.system.WindowHandler.Window;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +34,6 @@ public class SurveillanceStationFactory {
 	private final File surveillanceStation;
 	private final RegistryHandler registryHandler;
 	private final LaunchHandler launchHandler;
-	private final ScreenHandler screenHandler;
-	private final WindowHandler windowHandler;
 
 	public SurveillanceStationClient newSurveillanceStationClient() {
 		return new SurveillanceStationClient();
@@ -72,14 +72,14 @@ public class SurveillanceStationFactory {
 		public Window getWindow() {
 			synchronized(processLock) {
 				if(process != null) {
-					return windowHandler.queryWindow(process.pid());
+					return WindowHandler.queryWindow(process.pid());
 				}
 				return null;
 			}
 		}
 
 		public Screen getScreen() {
-			Screen[] screens = screenHandler.queryScreens();
+			Screen[] screens = ScreenHandler.queryScreens();
 			if(screens != null && screens.length > monitor) {
 				return screens[monitor];
 			}
@@ -87,7 +87,7 @@ public class SurveillanceStationFactory {
 		}
 
 		public boolean screenAvailable(int id) {
-			Screen[] screens = screenHandler.queryScreens();
+			Screen[] screens = ScreenHandler.queryScreens();
 			if(screens != null && screens.length > id) {
 				return screens[id] != null;
 			}
