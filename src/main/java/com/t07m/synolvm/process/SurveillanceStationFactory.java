@@ -98,7 +98,7 @@ public class SurveillanceStationFactory {
 			Screen screen = getScreen();
 			Window window = getWindow();
 			if(screen != null && window != null) {
-				return screen.getRect(true).contains(window.getRect());
+				return screen.getScaledRect(true).contains(window.getRect());
 			}
 			return false;
 		}
@@ -135,8 +135,10 @@ public class SurveillanceStationFactory {
 					if(!running) {
 						this.monitor = monitor;
 						Screen screen = getScreen();
+						Rectangle screenRect = screen.getScaledRect(false);
+						System.out.println(screenRect);
 						if(screen != null) {
-							registry.setWinGeometry(screen.getX()+","+(screen.getY()+1)+",1280,720");
+							registry.setWinGeometry(((int) screenRect.getX())+","+((int) (screenRect.getY()+1))+",1280,720");
 							if(importRegistry(registry)) {
 								process = launchHandler.executeHandler(surveillanceStation);
 								long start = System.currentTimeMillis();

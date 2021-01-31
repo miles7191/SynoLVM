@@ -33,11 +33,13 @@ public class ScreenHandler {
 		try {
 			for(GraphicsDevice device : env.getScreenDevices()) {
 				Rectangle ret = device.getDefaultConfiguration().getBounds();
+				double scale = device.getDefaultConfiguration().getDefaultTransform().getScaleX();
 				screens.add(new Screen(
 						(int) (ret.getX()),
 						(int) (ret.getY()),
 						(int) (ret.getX() + ret.getWidth()),
-						(int) (ret.getY() + ret.getHeight())));
+						(int) (ret.getY() + ret.getHeight()),
+						scale));
 			}
 		}catch (HeadlessException e) {}
 		return screens.toArray(new Screen[screens.size()]);
@@ -46,14 +48,25 @@ public class ScreenHandler {
 	@ToString
 	@RequiredArgsConstructor
 	public static class Screen {
-		private static final int screenPadding = 20;
+		private static final int sp = 20;
 
 		private final @Getter int x, y, x2, y2;
-
+		private final @Getter double scale;
+		
 		public Rectangle getRect(boolean padding) {
 			if (padding)
-				return new Rectangle(getX() - screenPadding, getY() - screenPadding, getX2() - getX() + screenPadding*2, getY2() - getY() + screenPadding*2); 
-			return new Rectangle(getX(), getY(), getX2() - getX(), getY2() - getY());
+				return new Rectangle(x-sp, y-sp, x2-x+sp*2, y2-y+sp*2); 
+			return new Rectangle(x, y, x2-x, y2-y);
+		}
+		
+		public Rectangle getScaledRect(boolean padding) {
+			int sx = (int) Math.ceil(x*scale);
+			int sy = (int) Math.ceil(y*scale);
+			int sx2 = (int) Math.ceil(x2*scale);
+			int sy2 = (int) Math.ceil(y2*scale);
+			if (padding)
+				return new Rectangle(sx-sp, sy-sp, sx2-sx+sp*2, sy2-sy+sp*2); 
+			return new Rectangle(sx, sy, sx2-sx, sy2-sy);
 		}
 	}
 }
