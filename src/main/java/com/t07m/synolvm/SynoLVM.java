@@ -18,6 +18,9 @@ package com.t07m.synolvm;
 import java.awt.Frame;
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.t07m.application.Application;
 import com.t07m.swing.console.ConsoleWindow;
 import com.t07m.synolvm.command.ReloadCommand;
@@ -28,6 +31,10 @@ import com.t07m.synolvm.command.ViewSetCommand;
 import com.t07m.synolvm.config.LVMConfig;
 import com.t07m.synolvm.config.ViewConfigFactory;
 import com.t07m.synolvm.handlers.RegistryHandler;
+import com.t07m.synolvm.startup.MouseLocationCheck;
+import com.t07m.synolvm.startup.RougeClientCheck;
+import com.t07m.synolvm.startup.ScreenCheck;
+import com.t07m.synolvm.startup.StartupCheck;
 import com.t07m.synolvm.view.ViewManager;
 
 import lombok.Getter;
@@ -47,6 +54,8 @@ public class SynoLVM extends Application{
 		new SynoLVM(gui).start();
 	}
 
+	private static Logger logger = LoggerFactory.getLogger(SynoLVM.class);
+	
 	private @Getter LVMConfig config;
 	private @Getter ViewConfigFactory viewConfigFactory;
 	private @Getter SurveillanceStationFactory surveillanceStationFactory;
@@ -76,13 +85,23 @@ public class SynoLVM extends Application{
 				new ViewDeleteCommand(this),
 				new ViewListCommand(this),
 				new ViewSetCommand(this));
-		if(this.getConsole() instanceof ConsoleWindow) {
-			((ConsoleWindow)(this.getConsole())).setState(Frame.ICONIFIED);
+		for(StartupCheck check : new StartupCheck[] {
+				new ScreenCheck(),
+				new RougeClientCheck(),
+				new MouseLocationCheck()
+		}) {
+			if(!check.check()) {
+				logger.error("Failed startup check: " + check.getClass().getSimpleName());
+				check.performCorrectiveAction();
+			}
 		}
 		RegistryHandler registryHandler = new RegistryHandler();
 		this.viewConfigFactory = new ViewConfigFactory(this.config, registryHandler);
 		this.surveillanceStationFactory = new SurveillanceStationFactory(new File(this.config.getSurveillanceStationPath()), registryHandler);
 		this.viewManager = new ViewManager(this);
 		this.registerService(viewManager);
+		if(this.getConsole() instanceof ConsoleWindow) {
+			((ConsoleWindow)(this.getConsole())).setState(Frame.ICONIFIED);
+		}
 	}
 }
