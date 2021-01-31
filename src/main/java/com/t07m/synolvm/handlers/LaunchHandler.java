@@ -17,12 +17,15 @@ package com.t07m.synolvm.handlers;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ProcessBuilder.Redirect;
 
 public class LaunchHandler {
 
 	public static ProcessHandle executeHandler(File file) {
 		ProcessBuilder pb = new ProcessBuilder(file.getAbsolutePath());
 		try {
+			pb.redirectError(Redirect.DISCARD);
+			pb.redirectOutput(Redirect.DISCARD);
 			Process proc = pb.start();
 			if(proc != null) {
 				return proc.toHandle();
