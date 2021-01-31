@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm.process;
+package com.t07m.synolvm;
 
 import java.awt.Rectangle;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import com.t07m.synolvm.config.LVMConfig.ViewConfig.Registry;
-import com.t07m.synolvm.system.ScreenHandler;
-import com.t07m.synolvm.system.ScreenHandler.Screen;
-import com.t07m.synolvm.system.WindowHandler;
-import com.t07m.synolvm.system.WindowHandler.Window;
+import com.t07m.synolvm.handlers.LaunchHandler;
+import com.t07m.synolvm.handlers.RegistryHandler;
+import com.t07m.synolvm.handlers.ScreenHandler;
+import com.t07m.synolvm.handlers.WindowHandler;
+import com.t07m.synolvm.handlers.ScreenHandler.Screen;
+import com.t07m.synolvm.handlers.WindowHandler.Window;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +35,6 @@ public class SurveillanceStationFactory {
 
 	private final File surveillanceStation;
 	private final RegistryHandler registryHandler;
-	private final LaunchHandler launchHandler;
 
 	public SurveillanceStationClient newSurveillanceStationClient() {
 		return new SurveillanceStationClient();
@@ -136,11 +137,10 @@ public class SurveillanceStationFactory {
 						this.monitor = monitor;
 						Screen screen = getScreen();
 						Rectangle screenRect = screen.getScaledRect(false);
-						System.out.println(screenRect);
 						if(screen != null) {
 							registry.setWinGeometry(((int) screenRect.getX())+","+((int) (screenRect.getY()+1))+",1280,720");
 							if(importRegistry(registry)) {
-								process = launchHandler.executeHandler(surveillanceStation);
+								process = LaunchHandler.executeHandler(surveillanceStation);
 								long start = System.currentTimeMillis();
 								while(System.currentTimeMillis() - start < timeout && getWindow() == null) {
 									try {

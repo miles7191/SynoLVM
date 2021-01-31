@@ -17,8 +17,8 @@ package com.t07m.synolvm;
 
 import org.junit.jupiter.api.Test;
 
-import com.t07m.synolvm.system.WindowHandler;
-import com.t07m.synolvm.system.WindowHandler.Window;
+import com.t07m.synolvm.handlers.WindowHandler;
+import com.t07m.synolvm.handlers.WindowHandler.Window;
 
 
 class WindowHandlerTest {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Matthew Rosato
+ * Copyright (C) 2021 Matthew Rosato
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm.config;
+package com.t07m.synolvm.handlers;
 
-import com.t07m.synolvm.config.LVMConfig.ViewConfig;
-import com.t07m.synolvm.handlers.RegistryHandler;
+import java.io.File;
+import java.io.IOException;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+public class LaunchHandler {
 
-@RequiredArgsConstructor
-public class ViewConfigFactory {
-
-	private final @NonNull LVMConfig config;
-	private final @NonNull RegistryHandler registryHandler;
-
-	public ViewConfig loadNewViewConfig() {
-		ViewConfig vc = config.newViewConfig();
-		if(registryHandler.exportRegistryTo(vc.getRegistry())) {
-			return vc;
+	public static ProcessHandle executeHandler(File file) {
+		ProcessBuilder pb = new ProcessBuilder(file.getAbsolutePath());
+		try {
+			Process proc = pb.start();
+			if(proc != null) {
+				return proc.toHandle();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
+	
 }

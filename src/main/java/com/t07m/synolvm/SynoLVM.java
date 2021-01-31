@@ -27,10 +27,7 @@ import com.t07m.synolvm.command.ViewListCommand;
 import com.t07m.synolvm.command.ViewSetCommand;
 import com.t07m.synolvm.config.LVMConfig;
 import com.t07m.synolvm.config.ViewConfigFactory;
-import com.t07m.synolvm.process.LaunchHandler;
-import com.t07m.synolvm.process.RegistryHandler;
-import com.t07m.synolvm.process.SurveillanceStationFactory;
-import com.t07m.synolvm.system.WindowHandler;
+import com.t07m.synolvm.handlers.RegistryHandler;
 import com.t07m.synolvm.view.ViewManager;
 
 import lombok.Getter;
@@ -60,7 +57,6 @@ public class SynoLVM extends Application{
 		super(gui, "SynoLVM");
 	}
 	
-	@SuppressWarnings("serial")
 	public void init() {
 		this.config = new LVMConfig();
 		try {
@@ -85,7 +81,7 @@ public class SynoLVM extends Application{
 		}
 		RegistryHandler registryHandler = new RegistryHandler();
 		this.viewConfigFactory = new ViewConfigFactory(this.config, registryHandler);
-		this.surveillanceStationFactory = new SurveillanceStationFactory(new File(this.config.getSurveillanceStationPath()), registryHandler, new LaunchHandler(new File("lib/Launch.exe")));
+		this.surveillanceStationFactory = new SurveillanceStationFactory(new File(this.config.getSurveillanceStationPath()), registryHandler);
 		this.viewManager = new ViewManager(this);
 		this.registerService(viewManager);
 	}

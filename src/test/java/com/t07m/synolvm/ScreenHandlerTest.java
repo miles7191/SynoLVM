@@ -17,8 +17,8 @@ package com.t07m.synolvm;
 
 import org.junit.jupiter.api.Test;
 
-import com.t07m.synolvm.system.ScreenHandler;
-import com.t07m.synolvm.system.ScreenHandler.Screen;
+import com.t07m.synolvm.handlers.ScreenHandler;
+import com.t07m.synolvm.handlers.ScreenHandler.Screen;
 
 class ScreenHandlerTest {
 	

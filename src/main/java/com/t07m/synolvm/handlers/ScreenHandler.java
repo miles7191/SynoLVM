@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm.system;
+package com.t07m.synolvm.handlers;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;

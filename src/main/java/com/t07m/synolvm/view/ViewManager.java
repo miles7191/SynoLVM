@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.t07m.application.Service;
 import com.t07m.synolvm.SynoLVM;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig;
-import com.t07m.synolvm.system.WindowHandler.Window;
+import com.t07m.synolvm.handlers.WindowHandler.Window;
 
 public class ViewManager extends Service<SynoLVM>{
 

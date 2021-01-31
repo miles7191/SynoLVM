@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.t07m.synolvm.SynoLVM;
-import com.t07m.synolvm.system.WindowHandler.Window;
+import com.t07m.synolvm.handlers.WindowHandler.Window;
 import com.t07m.synolvm.view.View;
 import com.t07m.synolvm.view.ViewWatcher;
 

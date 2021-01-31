@@ -24,13 +24,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
+import com.t07m.synolvm.SurveillanceStationFactory.SurveillanceStationClient;
 import com.t07m.synolvm.config.LVMConfig;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig;
+import com.t07m.synolvm.handlers.RegistryHandler;
 import com.t07m.synolvm.config.ViewConfigFactory;
-import com.t07m.synolvm.process.LaunchHandler;
-import com.t07m.synolvm.process.RegistryHandler;
-import com.t07m.synolvm.process.SurveillanceStationFactory;
-import com.t07m.synolvm.process.SurveillanceStationFactory.SurveillanceStationClient;
 
 class SurveillanceStationFactoryTest {
 
@@ -38,12 +36,11 @@ class SurveillanceStationFactoryTest {
 	void test() {
 		File ss = new File("C:\\Program Files\\Synology\\SynologySurveillanceStationClient\\bin\\SynologySurveillanceStationClient.exe");
 		RegistryHandler rh = new RegistryHandler();
-		LaunchHandler lh = new LaunchHandler(new File("lib/Launch.exe"));
 		LVMConfig config = new LVMConfig();
 		ViewConfigFactory vcf = new ViewConfigFactory(config, rh);
 		ViewConfig vc = vcf.loadNewViewConfig();
 
-		SurveillanceStationFactory ssf = new SurveillanceStationFactory(ss, rh, lh);
+		SurveillanceStationFactory ssf = new SurveillanceStationFactory(ss, rh);
 		ExecutorService es = Executors.newWorkStealingPool();
 		for(int i = 0; i < 1; i++) {
 			Thread t = new Thread() {				

@@ -18,8 +18,8 @@ package com.t07m.synolvm.view;
 import java.util.concurrent.TimeUnit;
 
 import com.t07m.synolvm.SynoLVM;
+import com.t07m.synolvm.SurveillanceStationFactory.SurveillanceStationClient;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig;
-import com.t07m.synolvm.process.SurveillanceStationFactory.SurveillanceStationClient;
 import com.t07m.synolvm.view.watcher.ScreenPixelWatcher;
 import com.t07m.synolvm.view.watcher.WindowLocationWatcher;
 import com.t07m.synolvm.view.watcher.WindowTitleWatcher;
