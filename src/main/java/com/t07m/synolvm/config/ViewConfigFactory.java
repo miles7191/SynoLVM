@@ -25,11 +25,10 @@ import lombok.RequiredArgsConstructor;
 public class ViewConfigFactory {
 
 	private final @NonNull LVMConfig config;
-	private final @NonNull RegistryHandler registryHandler;
 
 	public ViewConfig loadNewViewConfig() {
 		ViewConfig vc = config.newViewConfig();
-		if(registryHandler.exportRegistryTo(vc.getRegistry())) {
+		if(RegistryHandler.exportRegistryTo(vc.getRegistry())) {
 			return vc;
 		}
 		return null;

@@ -27,8 +27,7 @@ class ViewConfigFactoryTest {
 	@Test
 	void test() {
 		LVMConfig config = new LVMConfig();
-		RegistryHandler handler = new RegistryHandler();
-		ViewConfigFactory vcf = new ViewConfigFactory(config, handler);
+		ViewConfigFactory vcf = new ViewConfigFactory(config);
 		ViewConfig vc = vcf.loadNewViewConfig();
 		System.out.println(vc.toString());
 	}

@@ -37,7 +37,7 @@ import joptsimple.OptionSet;
 
 public class ViewListCommand extends Command {
 
-	private static Logger logger = LoggerFactory.getLogger(ViewListCommand.class);
+	private static final Logger logger = LoggerFactory.getLogger(ViewListCommand.class);
 	
 	private final SynoLVM lvm;
 

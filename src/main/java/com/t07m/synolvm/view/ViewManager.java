@@ -28,14 +28,17 @@ import org.slf4j.LoggerFactory;
 import com.t07m.application.Service;
 import com.t07m.synolvm.SynoLVM;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig;
+import com.t07m.synolvm.config.LVMConfig.ViewConfig.RegistryConfig;
+import com.t07m.synolvm.handlers.RegistryHandler;
 import com.t07m.synolvm.handlers.WindowHandler.Window;
 
 public class ViewManager extends Service<SynoLVM>{
 
-	private static Logger logger = LoggerFactory.getLogger(ViewManager.class);
-	
+	private static final Logger logger = LoggerFactory.getLogger(ViewManager.class);
+
 	private ArrayList<View> views;
 
+	private RegistryConfig registryCache;
 	private View lastLaunch = null;
 
 	public ViewManager(SynoLVM app) {
@@ -110,6 +113,8 @@ public class ViewManager extends Service<SynoLVM>{
 								}
 							}
 						}
+						registryCache = RegistryHandler.exportRegistry();
+						logger.debug("Caching existing system registry.");
 						logger.info("Launching View: " + v.getViewConfig().getName());
 						if(v.launch(getApp())) {
 							lastLaunch = v;
@@ -122,6 +127,14 @@ public class ViewManager extends Service<SynoLVM>{
 						}
 					}
 				}
+			}
+		}
+		if(registryCache != null && lastLaunch != null && !lastLaunch.withinGracePeriod()) {
+			if(RegistryHandler.importRegistryToSystem(registryCache)) {
+				logger.debug("Restored cached system registry.");
+				registryCache = null;
+			}else {
+				logger.debug("Failed to restore cached system registry.");
 			}
 		}
 	}
@@ -159,6 +172,14 @@ public class ViewManager extends Service<SynoLVM>{
 				View v = itr.next();
 				itr.remove();
 				cleanupRemovedView(v);
+			}
+		}
+		if(registryCache != null) {
+			if(RegistryHandler.importRegistryToSystem(registryCache)) {
+				logger.debug("Restored cached system registry.");
+				registryCache = null;
+			}else {
+				logger.debug("Failed to restore cached system registry.");
 			}
 		}
 	}

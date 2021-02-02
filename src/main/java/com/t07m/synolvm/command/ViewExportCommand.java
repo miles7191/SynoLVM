@@ -34,7 +34,7 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 
 public class ViewExportCommand extends Command{
 
-	private static Logger logger = LoggerFactory.getLogger(ViewExportCommand.class);
+	private static final Logger logger = LoggerFactory.getLogger(ViewExportCommand.class);
 	
 	private final SynoLVM lvm;
 

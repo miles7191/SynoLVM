@@ -26,11 +26,10 @@ class RegistryHandlerTest {
 
 	@Test
 	void test() {
-		RegistryHandler rh = new RegistryHandler();
 		LVMConfig config = new LVMConfig();
-		ViewConfigFactory vcf = new ViewConfigFactory(config, rh);
+		ViewConfigFactory vcf = new ViewConfigFactory(config);
 		ViewConfig vc = vcf.loadNewViewConfig();
-		assert(rh.importRegistry(vc.getRegistry()));
+		assert(RegistryHandler.importRegistryToSystem(vc.getRegistry()));
 	}
 
 }

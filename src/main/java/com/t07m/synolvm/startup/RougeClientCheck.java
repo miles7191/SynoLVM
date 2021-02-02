@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 public class RougeClientCheck implements StartupCheck{
 
-	private static Logger logger = LoggerFactory.getLogger(RougeClientCheck.class);
+	private static final Logger logger = LoggerFactory.getLogger(RougeClientCheck.class);
 
 	public boolean check() {
 		logger.info("Checking for rouge Surveillance Station Clients...");

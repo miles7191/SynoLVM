@@ -30,8 +30,8 @@ import com.t07m.synolvm.view.ViewWatcher;
 
 public class ScreenPixelWatcher extends ViewWatcher {
 
-	private static Logger logger = LoggerFactory.getLogger(ScreenPixelWatcher.class);
-	
+	private static final Logger logger = LoggerFactory.getLogger(ScreenPixelWatcher.class);
+
 	private BufferedImage lastPass = null;
 
 	public ScreenPixelWatcher(SynoLVM app, View view) {
@@ -60,9 +60,11 @@ public class ScreenPixelWatcher extends ViewWatcher {
 								}
 							}
 							lastPass = null;
-							getView().inValidate();
-							logger.info("View failed ScreenPixelWatcher: " + getView().getViewConfig().getName());
-							
+							if(getView().isValid()) {
+								getView().inValidate();
+								logger.info("View failed ScreenPixelWatcher: " + getView().getViewConfig().getName());
+							}
+
 						}
 					} catch (AWTException e) {}
 				}

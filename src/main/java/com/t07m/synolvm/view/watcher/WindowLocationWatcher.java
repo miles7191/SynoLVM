@@ -26,18 +26,20 @@ import com.t07m.synolvm.view.ViewWatcher;
 
 public class WindowLocationWatcher extends ViewWatcher {
 
-	private static Logger logger = LoggerFactory.getLogger(WindowLocationWatcher.class);
-	
+	private static final Logger logger = LoggerFactory.getLogger(WindowLocationWatcher.class);
+
 	public WindowLocationWatcher(SynoLVM app, View view) {
 		super(app, TimeUnit.SECONDS.toMillis(10), view);
 	}
-	
+
 	public void process() {
 		if(!getView().withinGracePeriod()) {
 			synchronized(getView().getSurveillanceStationClient()) {
 				if(getView().getViewConfig().getMonitor() != getView().getSurveillanceStationClient().getMonitor() || !getView().getSurveillanceStationClient().isCorrectScreen()) {
-					getView().inValidate();
-					logger.info("View failed WindowLocationMonitor: " + getView().getViewConfig().getName());
+					if(getView().isValid()) {
+						getView().inValidate();
+						logger.info("View failed WindowLocationMonitor: " + getView().getViewConfig().getName());
+					}
 				}
 			}
 		}

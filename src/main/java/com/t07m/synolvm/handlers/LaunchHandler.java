@@ -19,8 +19,15 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.t07m.synolvm.view.ViewManager;
+
 public class LaunchHandler {
 
+	private static final Logger logger = LoggerFactory.getLogger(LaunchHandler.class);
+	
 	public static ProcessHandle executeHandler(File file) {
 		ProcessBuilder pb = new ProcessBuilder(file.getAbsolutePath());
 		try {
@@ -28,6 +35,7 @@ public class LaunchHandler {
 			pb.redirectOutput(Redirect.DISCARD);
 			Process proc = pb.start();
 			if(proc != null) {
+				logger.debug("Started new process with PID: " + proc.pid() + " File: " + file.getAbsolutePath());
 				return proc.toHandle();
 			}
 		} catch (IOException e) {

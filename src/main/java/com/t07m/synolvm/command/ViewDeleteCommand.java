@@ -34,7 +34,7 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 
 public class ViewDeleteCommand extends Command {
 
-	private static Logger logger = LoggerFactory.getLogger(ViewDeleteCommand.class);
+	private static final Logger logger = LoggerFactory.getLogger(ViewDeleteCommand.class);
 	
 	private final SynoLVM lvm;
 	

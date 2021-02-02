@@ -32,7 +32,7 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 
 public class ViewSetCommand extends Command {
 
-	private static Logger logger = LoggerFactory.getLogger(ViewSetCommand.class);
+	private static final Logger logger = LoggerFactory.getLogger(ViewSetCommand.class);
 	
 	private final SynoLVM lvm;
 

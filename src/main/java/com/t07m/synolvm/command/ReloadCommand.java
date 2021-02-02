@@ -27,7 +27,7 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 
 public class ReloadCommand extends Command {
 
-	private static Logger logger = LoggerFactory.getLogger(ReloadCommand.class);
+	private static final Logger logger = LoggerFactory.getLogger(ReloadCommand.class);
 	
 	private final SynoLVM lvm;
 

@@ -30,7 +30,6 @@ import com.t07m.synolvm.command.ViewListCommand;
 import com.t07m.synolvm.command.ViewSetCommand;
 import com.t07m.synolvm.config.LVMConfig;
 import com.t07m.synolvm.config.ViewConfigFactory;
-import com.t07m.synolvm.handlers.RegistryHandler;
 import com.t07m.synolvm.startup.MouseLocationCheck;
 import com.t07m.synolvm.startup.RougeClientCheck;
 import com.t07m.synolvm.startup.ScreenCheck;
@@ -54,7 +53,7 @@ public class SynoLVM extends Application{
 		new SynoLVM(gui).start();
 	}
 
-	private static Logger logger = LoggerFactory.getLogger(SynoLVM.class);
+	private static final Logger logger = LoggerFactory.getLogger(SynoLVM.class);
 	
 	private @Getter LVMConfig config;
 	private @Getter ViewConfigFactory viewConfigFactory;
@@ -95,9 +94,8 @@ public class SynoLVM extends Application{
 				check.performCorrectiveAction();
 			}
 		}
-		RegistryHandler registryHandler = new RegistryHandler();
-		this.viewConfigFactory = new ViewConfigFactory(this.config, registryHandler);
-		this.surveillanceStationFactory = new SurveillanceStationFactory(new File(this.config.getSurveillanceStationPath()), registryHandler);
+		this.viewConfigFactory = new ViewConfigFactory(this.config);
+		this.surveillanceStationFactory = new SurveillanceStationFactory(new File(this.config.getSurveillanceStationPath()));
 		this.viewManager = new ViewManager(this);
 		this.registerService(viewManager);
 		if(this.getConsole() instanceof ConsoleWindow) {

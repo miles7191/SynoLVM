@@ -27,8 +27,8 @@ import com.t07m.synolvm.view.ViewWatcher;
 
 public class WindowTitleWatcher extends ViewWatcher{
 
-	private static Logger logger = LoggerFactory.getLogger(WindowTitleWatcher.class);
-	
+	private static final Logger logger = LoggerFactory.getLogger(WindowTitleWatcher.class);
+
 	public WindowTitleWatcher(SynoLVM app, View view) {
 		super(app, TimeUnit.SECONDS.toMillis(10), view);
 	}
@@ -40,8 +40,10 @@ public class WindowTitleWatcher extends ViewWatcher{
 				if (window != null && !window.getTitle().equals("Synology Surveillance Station Client")) {
 					return;
 				}else {
-					getView().inValidate();
-					logger.info("View failed WindowTitleMonitor: " + getView().getViewConfig().getName());
+					if(getView().isValid()) {
+						getView().inValidate();
+						logger.info("View failed WindowTitleMonitor: " + getView().getViewConfig().getName());
+					}
 				}
 			}
 		}

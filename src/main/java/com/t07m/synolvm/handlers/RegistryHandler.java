@@ -30,34 +30,59 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.t07m.synolvm.config.LVMConfig.ViewConfig.Registry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class RegistryHandler {
+import com.t07m.synolvm.config.LVMConfig;
+import com.t07m.synolvm.config.LVMConfig.ViewConfig.RegistryConfig;
+import com.t07m.synolvm.view.ViewManager;
 
+import lombok.Getter;
+
+public abstract class RegistryHandler {
+
+	private static final Logger logger = LoggerFactory.getLogger(ViewManager.class);
+	
 	private static final String REGISTRY_HIVE = "HKEY_CURRENT_USER\\SOFTWARE\\Synology\\Surveillance Station Client";
 	private static final Pattern KEY_PATTERN = Pattern.compile("\"([A-Z])\\w+\"");
 
-	public boolean importRegistry(Registry registry) {
+	private static final @Getter Object RegistryLock = new Object();
+
+	public static boolean importRegistryToSystem(RegistryConfig registry) {
 		if(registry != null) {
-			File tf = newTempFile();
-			if(tf != null) {
-				if(saveRegistryToFile(registry, tf)) {
-					try {
-						Process p = Runtime.getRuntime().exec("REG IMPORT \"" + tf.getAbsolutePath() + "\"");
-						if (p.waitFor(10L, TimeUnit.SECONDS)) {
-							tf.delete();
-							return true;
-						} 
-						p.destroyForcibly();
-					} catch (IOException|InterruptedException e) {} 
-					tf.delete();
+			synchronized(RegistryLock) {
+				File tf = newTempFile();
+				if(tf != null) {
+					if(saveRegistryToFile(registry, tf)) {
+						try {
+							Process p = Runtime.getRuntime().exec("REG IMPORT \"" + tf.getAbsolutePath() + "\"");
+							if (p.waitFor(10L, TimeUnit.SECONDS)) {
+								tf.delete();
+								return true;
+							} 
+							p.destroyForcibly();
+							logger.error("Registry import terminated due to process hang.");
+						} catch (IOException|InterruptedException e) {} 
+						tf.delete();
+					}
 				}
 			}
 		}
 		return false;
 	}
 
-	public boolean exportRegistryTo(Registry registry) {
+	public static RegistryConfig exportRegistry() {
+		RegistryConfig rc = new LVMConfig().newViewConfig().getRegistry();
+		if(exportRegistryTo(rc, false))
+			return rc;
+		return null;
+	}
+
+	public static boolean exportRegistryTo(RegistryConfig registry) {
+		return exportRegistryTo(registry, true);
+	}
+
+	public static boolean exportRegistryTo(RegistryConfig registry, boolean setRecommendedValues) {
 		if(registry != null) {
 			File file = newTempFile();
 			if(exportRegistryToFile(REGISTRY_HIVE, file)) {
@@ -78,7 +103,9 @@ public class RegistryHandler {
 					file.delete();
 					if(valueMap != null) {
 						setValues(registry, valueMap);
-						setRecommendedValues(registry);
+						if(setRecommendedValues) {
+							setRecommendedValues(registry);
+						}
 						return true;
 					}
 				} catch (IOException e) {
@@ -90,7 +117,7 @@ public class RegistryHandler {
 		return false;
 	}
 
-	private void setValues(Registry reg, Map<String, Object> registryValues) {
+	private static void setValues(RegistryConfig reg, Map<String, Object> registryValues) {
 		reg.setAlwaysAskDownloadLocation(registryValues.get("AlwaysAskDownloadLocation") != null ? ((String) registryValues.get("AlwaysAskDownloadLocation")) : null);
 		reg.setAutoBalance(registryValues.get("AutoBalance") != null ? ((String) registryValues.get("AutoBalance")) : null);
 		reg.setAutoLogin(registryValues.get("AutoLogin") != null ? ((String) registryValues.get("AutoLogin")) : null);
@@ -124,7 +151,7 @@ public class RegistryHandler {
 		reg.setWinStates(registryValues.get("WinStates") != null ? ((Integer)registryValues.get("WinStates")) : 0);
 	}
 
-	private void setRecommendedValues(Registry registry) {
+	private static void setRecommendedValues(RegistryConfig registry) {
 		registry.setAutoBalance("true");
 		registry.setAutoLogin("true");
 		registry.setEnableGpuDecoder("true");
@@ -134,7 +161,7 @@ public class RegistryHandler {
 		registry.setShowHwLabel("false");
 	}
 
-	private Map<String, Object> parseValuesToMap(String values){
+	private static Map<String, Object> parseValuesToMap(String values){
 		if(values != null && values.length() > 0) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			Matcher matcher = KEY_PATTERN.matcher(values);
@@ -151,7 +178,7 @@ public class RegistryHandler {
 		return null;
 	}
 
-	private void addValue(String s, Map<String, Object> map) {
+	private static void addValue(String s, Map<String, Object> map) {
 		String[] elements = s.split("=");
 		String key = elements[0];
 		key = key.substring(1, key.length() - 1);
@@ -169,7 +196,7 @@ public class RegistryHandler {
 		} 
 	}
 
-	private boolean saveRegistryToFile(Registry registry, File file) {
+	private static boolean saveRegistryToFile(RegistryConfig registry, File file) {
 		if(!file.exists() || file.canWrite()) {
 			try(OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_16LE)){
 				writer.write("\ufeff");
@@ -214,22 +241,24 @@ public class RegistryHandler {
 		return false;
 	}
 
-	private boolean exportRegistryToFile(String path, File file) {
+	private static boolean exportRegistryToFile(String path, File file) {
 		if (file != null) {
-			try {
-				Process p = Runtime.getRuntime().exec("REG EXPORT \"" + path + "\" \"" + file.getAbsolutePath() + "\" /y");
-				if (p.waitFor(10L, TimeUnit.SECONDS)) {
-					return true;
+			synchronized(RegistryLock) {
+				try {
+					Process p = Runtime.getRuntime().exec("REG EXPORT \"" + path + "\" \"" + file.getAbsolutePath() + "\" /y");
+					if (p.waitFor(10L, TimeUnit.SECONDS)) {
+						return true;
+					} 
+					p.destroyForcibly();
+				} catch (IOException|InterruptedException e) {
+					e.printStackTrace();
 				} 
-				p.destroyForcibly();
-			} catch (IOException|InterruptedException e) {
-				e.printStackTrace();
-			} 
+			}
 		} 
 		return false;
 	}
 
-	private File newTempFile() {
+	private static File newTempFile() {
 		try {
 			File f = Files.createTempFile("LV", null, (FileAttribute<?>[])new FileAttribute[0]).toFile();
 			if (f.exists() && f.canWrite()) {
@@ -241,5 +270,4 @@ public class RegistryHandler {
 		} 
 		return null;
 	}
-
 }

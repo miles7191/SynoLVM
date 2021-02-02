@@ -19,12 +19,12 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-import com.t07m.synolvm.config.LVMConfig.ViewConfig.Registry;
+import com.t07m.synolvm.config.LVMConfig.ViewConfig.RegistryConfig;
 import com.t07m.synolvm.handlers.LaunchHandler;
 import com.t07m.synolvm.handlers.RegistryHandler;
 import com.t07m.synolvm.handlers.ScreenHandler;
-import com.t07m.synolvm.handlers.WindowHandler;
 import com.t07m.synolvm.handlers.ScreenHandler.Screen;
+import com.t07m.synolvm.handlers.WindowHandler;
 import com.t07m.synolvm.handlers.WindowHandler.Window;
 
 import lombok.Getter;
@@ -34,7 +34,6 @@ import lombok.RequiredArgsConstructor;
 public class SurveillanceStationFactory {
 
 	private final File surveillanceStation;
-	private final RegistryHandler registryHandler;
 
 	public SurveillanceStationClient newSurveillanceStationClient() {
 		return new SurveillanceStationClient();
@@ -46,7 +45,7 @@ public class SurveillanceStationFactory {
 		private ProcessHandle process;
 		private @Getter int monitor = Integer.MAX_VALUE;
 
-		private Object processLock = new Object();
+		private final Object processLock = new Object();
 
 		public Rectangle getBounds() {
 			synchronized(processLock) {
@@ -126,20 +125,16 @@ public class SurveillanceStationFactory {
 			}
 		}
 
-		private boolean importRegistry(Registry registry) {
-			return registryHandler.importRegistry(registry);
-		}
-
-		public boolean launch(long timeout, int monitor, Registry registry) {
+		public boolean launch(long timeout, int monitor, RegistryConfig registry) {
 			synchronized(processLock) {
-				synchronized(registryHandler) {
-					if(!running) {
+				if(!running) {
+					synchronized(RegistryHandler.getRegistryLock()) {
 						this.monitor = monitor;
 						Screen screen = getScreen();
 						Rectangle screenRect = screen.getScaledRect(false);
 						if(screen != null) {
 							registry.setWinGeometry(((int) screenRect.getX())+","+((int) (screenRect.getY()+1))+",1280,720");
-							if(importRegistry(registry)) {
+							if(RegistryHandler.importRegistryToSystem(registry)) {
 								process = LaunchHandler.executeHandler(surveillanceStation);
 								long start = System.currentTimeMillis();
 								while(System.currentTimeMillis() - start < timeout && getWindow() == null) {
@@ -154,8 +149,8 @@ public class SurveillanceStationFactory {
 							}
 						}
 					}
-					return false;
 				}
+				return false;
 			}
 		}
 

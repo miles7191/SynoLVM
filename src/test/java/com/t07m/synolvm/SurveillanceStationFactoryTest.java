@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test;
 import com.t07m.synolvm.SurveillanceStationFactory.SurveillanceStationClient;
 import com.t07m.synolvm.config.LVMConfig;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig;
-import com.t07m.synolvm.handlers.RegistryHandler;
 import com.t07m.synolvm.config.ViewConfigFactory;
 
 class SurveillanceStationFactoryTest {
@@ -35,12 +34,11 @@ class SurveillanceStationFactoryTest {
 	@Test
 	void test() {
 		File ss = new File("C:\\Program Files\\Synology\\SynologySurveillanceStationClient\\bin\\SynologySurveillanceStationClient.exe");
-		RegistryHandler rh = new RegistryHandler();
 		LVMConfig config = new LVMConfig();
-		ViewConfigFactory vcf = new ViewConfigFactory(config, rh);
+		ViewConfigFactory vcf = new ViewConfigFactory(config);
 		ViewConfig vc = vcf.loadNewViewConfig();
 
-		SurveillanceStationFactory ssf = new SurveillanceStationFactory(ss, rh);
+		SurveillanceStationFactory ssf = new SurveillanceStationFactory(ss);
 		ExecutorService es = Executors.newWorkStealingPool();
 		for(int i = 0; i < 1; i++) {
 			Thread t = new Thread() {				
