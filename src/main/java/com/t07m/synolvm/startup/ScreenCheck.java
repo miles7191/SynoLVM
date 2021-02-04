@@ -15,6 +15,7 @@
  */
 package com.t07m.synolvm.startup;
 
+import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -31,6 +32,9 @@ public class ScreenCheck implements StartupCheck{
 	private final int SecondsToReboot = (int) TimeUnit.MINUTES.toSeconds(3);
 	
 	public boolean check() {
+		if(GraphicsEnvironment.isHeadless()) {
+			return false;
+		}
 		logger.info("Checking system for available screens.");
 		Screen[] screens = ScreenHandler.queryScreens();
 		if(screens.length > 0) {
@@ -55,7 +59,7 @@ public class ScreenCheck implements StartupCheck{
 			Thread.sleep(1000);
 		} catch (IOException | InterruptedException e) {}
 		while(System.currentTimeMillis() - start < TimeUnit.SECONDS.toMillis(SecondsToReboot-1)) {
-			if(ScreenHandler.queryScreens().length > 0) {
+			if(!GraphicsEnvironment.isHeadless() && ScreenHandler.queryScreens().length > 0) {
 				try {
 					logger.info("System is no longer headless. Attempting to cancel reboot.");
 					Runtime.getRuntime().exec("shutdown -a");

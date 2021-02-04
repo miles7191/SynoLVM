@@ -17,6 +17,7 @@ package com.t07m.synolvm;
 
 import java.awt.Frame;
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +31,12 @@ import com.t07m.synolvm.command.ViewListCommand;
 import com.t07m.synolvm.command.ViewSetCommand;
 import com.t07m.synolvm.config.LVMConfig;
 import com.t07m.synolvm.config.ViewConfigFactory;
+import com.t07m.synolvm.startup.GracePeriodCheck;
 import com.t07m.synolvm.startup.MouseLocationCheck;
 import com.t07m.synolvm.startup.RougeClientCheck;
 import com.t07m.synolvm.startup.ScreenCheck;
 import com.t07m.synolvm.startup.StartupCheck;
+import com.t07m.synolvm.system.monitors.UserMonitor;
 import com.t07m.synolvm.view.ViewManager;
 
 import lombok.Getter;
@@ -58,6 +61,7 @@ public class SynoLVM extends Application{
 	private @Getter LVMConfig config;
 	private @Getter ViewConfigFactory viewConfigFactory;
 	private @Getter SurveillanceStationFactory surveillanceStationFactory;
+	private @Getter UserMonitor userMonitor;
 	
 	private @Getter ViewManager viewManager;
 
@@ -78,26 +82,28 @@ public class SynoLVM extends Application{
 			} catch (InterruptedException e1) {}
 			System.exit(-1);
 		}
+		StartupCheck[] startupChecks = new StartupCheck[] {
+				new ScreenCheck(),
+				new GracePeriodCheck(TimeUnit.SECONDS.toMillis(this.config.getLaunchGracePeriod())),
+				new RougeClientCheck(),
+				new MouseLocationCheck()};
 		this.getConsole().registerCommands(
 				new ReloadCommand(this),
 				new ViewExportCommand(this),
 				new ViewDeleteCommand(this),
 				new ViewListCommand(this),
 				new ViewSetCommand(this));
-		for(StartupCheck check : new StartupCheck[] {
-				new ScreenCheck(),
-				new RougeClientCheck(),
-				new MouseLocationCheck()
-		}) {
-			if(!check.check()) {
-				logger.error("Failed startup check: " + check.getClass().getSimpleName());
-				check.performCorrectiveAction();
-			}
-		}
 		this.viewConfigFactory = new ViewConfigFactory(this.config);
 		this.surveillanceStationFactory = new SurveillanceStationFactory(new File(this.config.getSurveillanceStationPath()));
 		this.viewManager = new ViewManager(this);
+		this.userMonitor = new UserMonitor(this);
+		for(StartupCheck check : startupChecks) {
+			if(!check.check()) {
+				check.performCorrectiveAction();
+			}
+		}
 		this.registerService(viewManager);
+		this.registerService(userMonitor);
 		if(this.getConsole() instanceof ConsoleWindow) {
 			((ConsoleWindow)(this.getConsole())).setState(Frame.ICONIFIED);
 		}

@@ -102,6 +102,17 @@ public class SurveillanceStationFactory {
 			}
 			return false;
 		}
+		
+		public boolean isFullScreen() {
+			Screen screen = getScreen();
+			Window window = getWindow();
+			if(screen != null && window != null) {
+				Rectangle sr = screen.getScaledRect(false);
+				Rectangle wr = window.getRect();
+				return sr.x == wr.x && sr.y == wr.y && sr.width == wr.width && sr.height == wr.height;
+			}
+			return false;
+		}
 
 		public long getProcessRuntime() {
 			synchronized(processLock) {

@@ -15,7 +15,9 @@
  */
 package com.t07m.synolvm.startup;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,8 @@ import org.slf4j.LoggerFactory;
 public class RougeClientCheck implements StartupCheck{
 
 	private static final Logger logger = LoggerFactory.getLogger(RougeClientCheck.class);
+
+	private List<ProcessHandle> rouges = new ArrayList<ProcessHandle>();
 
 	public boolean check() {
 		logger.info("Checking for rouge Surveillance Station Clients...");
@@ -33,21 +37,22 @@ public class RougeClientCheck implements StartupCheck{
 			if(ph.info().command().isPresent()) {
 				String command = ph.info().command().get();
 				if(command != null && command.toLowerCase().endsWith("synologysurveillancestationclient.exe")) {
-					boolean killed = ph.destroyForcibly();
-					if(killed) {
-						logger.info("Successfully killed rouge client PID: " + ph.pid());
-					}else {
-						logger.warn("Failed to kill rouge client PID: " + ph.pid());
-					}
-					if(!killed && !failed)
-						failed = true;
+					failed = true;
+					rouges.add(ph);
 				}
 			}
 		}
 		return !failed;
 	}	
-	
+
 	public void performCorrectiveAction() {
-		
+		for(ProcessHandle ph : rouges) {
+			boolean killed = ph.destroyForcibly();
+			if(killed) {
+				logger.info("Successfully killed rouge client PID: " + ph.pid());
+			}else {
+				logger.warn("Failed to kill rouge client PID: " + ph.pid());
+			}
+		}
 	}
 }

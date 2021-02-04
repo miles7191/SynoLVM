@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Matthew Rosato
+ * Copyright (C) 2021 Matthew Rosato
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm.view;
+package com.t07m.synolvm.system.monitors;
 
 import com.t07m.application.Service;
 import com.t07m.synolvm.SynoLVM;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-
-public abstract class ViewWatcher extends Service<SynoLVM>{
-
-	private final @Getter(AccessLevel.PROTECTED) View view;
+public abstract class SystemMonitor extends Service<SynoLVM>{
 	
-	public ViewWatcher(SynoLVM app, long updateFrequency, View view) {
+	public SystemMonitor(SynoLVM app, long updateFrequency) {
 		super(app, updateFrequency);
-		this.view = view;
 	}
+
 }

@@ -31,6 +31,7 @@ import com.t07m.synolvm.config.LVMConfig.ViewConfig;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig.RegistryConfig;
 import com.t07m.synolvm.handlers.RegistryHandler;
 import com.t07m.synolvm.handlers.WindowHandler.Window;
+import com.t07m.synolvm.view.monitors.ViewMonitor;
 
 public class ViewManager extends Service<SynoLVM>{
 
@@ -113,12 +114,14 @@ public class ViewManager extends Service<SynoLVM>{
 								}
 							}
 						}
-						registryCache = RegistryHandler.exportRegistry();
-						logger.debug("Caching existing system registry.");
+						if(registryCache == null) {
+							registryCache = RegistryHandler.exportRegistry();
+							logger.debug("Caching existing system registry.");
+						}
 						logger.info("Launching View: " + v.getViewConfig().getName());
 						if(v.launch(getApp())) {
 							lastLaunch = v;
-							for(ViewWatcher vw : v.getViewWatchers()) {
+							for(ViewMonitor vw : v.getViewWatchers()) {
 								if(vw != null) {
 									getApp().registerService(vw);
 								}
@@ -156,7 +159,7 @@ public class ViewManager extends Service<SynoLVM>{
 
 	private void cleanupRemovedView(View view) {
 		synchronized(views) {
-			for(ViewWatcher vw : view.getViewWatchers()) {
+			for(ViewMonitor vw : view.getViewWatchers()) {
 				if(vw != null) {
 					getApp().removeService(vw);
 					view.getSurveillanceStationClient().stop();
@@ -171,7 +174,7 @@ public class ViewManager extends Service<SynoLVM>{
 			while(itr.hasNext()) {
 				View v = itr.next();
 				itr.remove();
-				cleanupRemovedView(v);
+				v.stop();
 			}
 		}
 		if(registryCache != null) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Matthew Rosato
+ * Copyright (C) 2020 Matthew Rosato
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm.startup;
+package com.t07m.synolvm.view.monitors;
 
-import java.awt.Point;
+import com.t07m.application.Service;
+import com.t07m.synolvm.SynoLVM;
+import com.t07m.synolvm.view.View;
 
-import com.t07m.synolvm.system.Mouse;
+import lombok.AccessLevel;
+import lombok.Getter;
 
-public class MouseLocationCheck implements StartupCheck{
+public abstract class ViewMonitor extends Service<SynoLVM>{
 
-	public boolean check() {
-		Point p = Mouse.getMouseLocation();
-		return p.getX() == 0D && p.getY() == 0D;
+	private final @Getter(AccessLevel.PROTECTED) View view;
+	
+	public ViewMonitor(SynoLVM app, long updateFrequency, View view) {
+		super(app, updateFrequency);
+		this.view = view;
 	}
-
-	public void performCorrectiveAction() {
-		Mouse.setPosition(0, 0);
-	}
-
 }

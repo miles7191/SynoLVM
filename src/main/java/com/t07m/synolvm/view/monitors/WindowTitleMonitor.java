@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm.view.watcher;
+package com.t07m.synolvm.view.monitors;
 
 import java.util.concurrent.TimeUnit;
 
@@ -23,13 +23,12 @@ import org.slf4j.LoggerFactory;
 import com.t07m.synolvm.SynoLVM;
 import com.t07m.synolvm.handlers.WindowHandler.Window;
 import com.t07m.synolvm.view.View;
-import com.t07m.synolvm.view.ViewWatcher;
 
-public class WindowTitleWatcher extends ViewWatcher{
+public class WindowTitleMonitor extends ViewMonitor{
 
-	private static final Logger logger = LoggerFactory.getLogger(WindowTitleWatcher.class);
+	private static final Logger logger = LoggerFactory.getLogger(WindowTitleMonitor.class);
 
-	public WindowTitleWatcher(SynoLVM app, View view) {
+	public WindowTitleMonitor(SynoLVM app, View view) {
 		super(app, TimeUnit.SECONDS.toMillis(10), view);
 	}
 

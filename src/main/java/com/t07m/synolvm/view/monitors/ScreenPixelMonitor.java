@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm.view.watcher;
+package com.t07m.synolvm.view.monitors;
 
 import java.awt.AWTException;
 import java.awt.Robot;
@@ -26,15 +26,14 @@ import org.slf4j.LoggerFactory;
 import com.t07m.synolvm.SynoLVM;
 import com.t07m.synolvm.handlers.ScreenHandler.Screen;
 import com.t07m.synolvm.view.View;
-import com.t07m.synolvm.view.ViewWatcher;
 
-public class ScreenPixelWatcher extends ViewWatcher {
+public class ScreenPixelMonitor extends ViewMonitor {
 
-	private static final Logger logger = LoggerFactory.getLogger(ScreenPixelWatcher.class);
+	private static final Logger logger = LoggerFactory.getLogger(ScreenPixelMonitor.class);
 
 	private BufferedImage lastPass = null;
 
-	public ScreenPixelWatcher(SynoLVM app, View view) {
+	public ScreenPixelMonitor(SynoLVM app, View view) {
 		super(app, TimeUnit.SECONDS.toMillis(30), view);
 	}
 

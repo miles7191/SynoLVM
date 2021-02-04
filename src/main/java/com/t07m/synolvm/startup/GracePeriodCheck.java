@@ -15,19 +15,34 @@
  */
 package com.t07m.synolvm.startup;
 
-import java.awt.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.t07m.synolvm.system.Mouse;
+public class GracePeriodCheck implements StartupCheck{
 
-public class MouseLocationCheck implements StartupCheck{
-
+	private static final Logger logger = LoggerFactory.getLogger(GracePeriodCheck.class);
+	
+	private final long gracePeriod;
+	private long initTime;
+	
+	public GracePeriodCheck(long gracePeriod) {
+		this.gracePeriod = gracePeriod;
+		this.initTime = System.currentTimeMillis();
+	}
+	
 	public boolean check() {
-		Point p = Mouse.getMouseLocation();
-		return p.getX() == 0D && p.getY() == 0D;
+		return System.currentTimeMillis() - initTime > gracePeriod ;
 	}
 
 	public void performCorrectiveAction() {
-		Mouse.setPosition(0, 0);
+		logger.info("Sleeping for grace period");
+		while(!check()) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		logger.info("Resuming application");
 	}
-
 }

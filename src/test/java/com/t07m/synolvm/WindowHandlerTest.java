@@ -15,9 +15,13 @@
  */
 package com.t07m.synolvm;
 
+import java.awt.Rectangle;
+
 import org.junit.jupiter.api.Test;
 
+import com.t07m.synolvm.handlers.ScreenHandler;
 import com.t07m.synolvm.handlers.WindowHandler;
+import com.t07m.synolvm.handlers.ScreenHandler.Screen;
 import com.t07m.synolvm.handlers.WindowHandler.Window;
 
 
@@ -25,8 +29,10 @@ class WindowHandlerTest {
 
 	@Test
 	void test() {
-		Window w = WindowHandler.queryWindow(1704);
-		System.out.println(w.toString());
+		Window w = WindowHandler.queryWindow(9936);
+		System.out.println(w.getRect());
+		Screen[] screens = ScreenHandler.queryScreens();
+		System.out.println(screens[1].getScaledRect(false));
 		assert(w != null);
 	}
 
