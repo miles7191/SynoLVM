@@ -24,7 +24,9 @@ import org.slf4j.LoggerFactory;
 
 import com.t07m.application.Application;
 import com.t07m.swing.console.ConsoleWindow;
+import com.t07m.synolvm.command.PauseCommand;
 import com.t07m.synolvm.command.ReloadCommand;
+import com.t07m.synolvm.command.ResumeCommand;
 import com.t07m.synolvm.command.ViewDeleteCommand;
 import com.t07m.synolvm.command.ViewExportCommand;
 import com.t07m.synolvm.command.ViewListCommand;
@@ -92,7 +94,9 @@ public class SynoLVM extends Application{
 				new ViewExportCommand(this),
 				new ViewDeleteCommand(this),
 				new ViewListCommand(this),
-				new ViewSetCommand(this));
+				new ViewSetCommand(this),
+				new PauseCommand(this),
+				new ResumeCommand(this));
 		this.viewConfigFactory = new ViewConfigFactory(this.config);
 		this.surveillanceStationFactory = new SurveillanceStationFactory(new File(this.config.getSurveillanceStationPath()));
 		this.viewManager = new ViewManager(this);
