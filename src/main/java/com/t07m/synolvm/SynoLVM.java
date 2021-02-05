@@ -33,7 +33,9 @@ import com.t07m.synolvm.command.ViewExportCommand;
 import com.t07m.synolvm.command.ViewListCommand;
 import com.t07m.synolvm.command.ViewSetCommand;
 import com.t07m.synolvm.config.LVMConfig;
+import com.t07m.synolvm.config.LVMConfig.ViewConfig;
 import com.t07m.synolvm.config.ViewConfigFactory;
+import com.t07m.synolvm.handlers.RegistryHandler;
 import com.t07m.synolvm.startup.GracePeriodCheck;
 import com.t07m.synolvm.startup.MouseLocationCheck;
 import com.t07m.synolvm.startup.RougeClientCheck;
@@ -76,6 +78,9 @@ public class SynoLVM extends Application{
 		this.config = new LVMConfig();
 		try {
 			this.config.init();
+			for(ViewConfig vc : this.config.getViewConfigurations()) {
+				RegistryHandler.trimLoginHistory(vc.getRegistry());
+			}
 			this.config.save();
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();

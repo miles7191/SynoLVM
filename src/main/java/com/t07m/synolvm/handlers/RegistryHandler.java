@@ -33,6 +33,10 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.t07m.synolvm.config.LVMConfig;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig.RegistryConfig;
 import com.t07m.synolvm.view.ViewManager;
@@ -42,7 +46,7 @@ import lombok.Getter;
 public abstract class RegistryHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(ViewManager.class);
-	
+
 	private static final String REGISTRY_HIVE = "HKEY_CURRENT_USER\\SOFTWARE\\Synology\\Surveillance Station Client";
 	private static final Pattern KEY_PATTERN = Pattern.compile("\"([A-Z])\\w+\"");
 
@@ -105,6 +109,7 @@ public abstract class RegistryHandler {
 						setValues(registry, valueMap);
 						if(setRecommendedValues) {
 							setRecommendedValues(registry);
+							trimLoginHistory(registry);
 						}
 						return true;
 					}
@@ -269,5 +274,18 @@ public abstract class RegistryHandler {
 			e.printStackTrace();
 		} 
 		return null;
+	}
+
+	public static void trimLoginHistory(RegistryConfig registry) {
+		String history = registry.getLoginHistory();
+		if(history != null && history.length() > 2) {
+			try {
+				Gson gson = new Gson();
+				JsonArray jsonArray = gson.fromJson(history.replace("\\\"", "\""), JsonArray.class);
+				JsonObject json = jsonArray.get(0).getAsJsonObject();
+				history = "[" + json.toString().replace("\"", "\\\"") + "]";
+			}catch(JsonSyntaxException e) {}
+		}
+		registry.setLoginHistory(history);
 	}
 }
