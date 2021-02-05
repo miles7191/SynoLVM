@@ -28,7 +28,7 @@ public class UserMonitor extends SystemMonitor{
 
 	private static final Logger logger = LoggerFactory.getLogger(UserMonitor.class);
 	
-	private final long userGracePeriod = TimeUnit.SECONDS.toMillis(15);
+	private final long userGracePeriod = TimeUnit.MINUTES.toMillis(2);
 	private long lastFound = 0;
 
 	private int lastX, lastY;
