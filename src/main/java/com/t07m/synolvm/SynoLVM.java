@@ -23,7 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.t07m.application.Application;
-import com.t07m.swing.console.ConsoleWindow;
+import com.t07m.console.remote.server.RemoteServer;
+import com.t07m.console.swing.ConsoleWindow;
 import com.t07m.synolvm.command.PauseCommand;
 import com.t07m.synolvm.command.ReloadCommand;
 import com.t07m.synolvm.command.ResumeCommand;
@@ -69,6 +70,8 @@ public class SynoLVM extends Application{
 	private @Getter UserMonitor userMonitor;
 	
 	private @Getter ViewManager viewManager;
+	
+	private RemoteServer remoteConsole;
 
 	public SynoLVM(boolean gui) {
 		super(gui, "SynoLVM");
@@ -90,6 +93,9 @@ public class SynoLVM extends Application{
 			} catch (InterruptedException e1) {}
 			System.exit(-1);
 		}
+		remoteConsole = new RemoteServer(this.getConsole(), 13560);
+		remoteConsole.init();
+		remoteConsole.bind();
 		StartupCheck[] startupChecks = new StartupCheck[] {
 				new ScreenCheck(),
 				new GracePeriodCheck(TimeUnit.SECONDS.toMillis(this.config.getLaunchGracePeriod())),
@@ -118,5 +124,9 @@ public class SynoLVM extends Application{
 		if(this.getConsole() instanceof ConsoleWindow) {
 			((ConsoleWindow)(this.getConsole())).setState(Frame.ICONIFIED);
 		}
+	}
+	
+	public void cleanup() {
+		remoteConsole.unbind();
 	}
 }
