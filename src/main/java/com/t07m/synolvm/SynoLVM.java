@@ -93,6 +93,7 @@ public class SynoLVM extends Application{
 			} catch (InterruptedException e1) {}
 			System.exit(-1);
 		}
+		logger.info("Launching Application.");
 		remoteConsole = new RemoteServer(this.getConsole(), 13560);
 		remoteConsole.init();
 		remoteConsole.bind();
