@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.zafarkhaja.semver.Version;
 import com.t07m.application.Application;
 import com.t07m.console.remote.server.RemoteServer;
 import com.t07m.console.swing.ConsoleWindow;
@@ -50,6 +51,9 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 
 public class SynoLVM extends Application{
 
+	public static final Version VERSION = Version.valueOf("0.0.2-SNAPSHOT");
+	public static final String GITHUB_REPO = "miles7191/SynoLVM";
+	
 	public static void main(String[] args) {
 		boolean gui = true;
 		if(args.length > 0) {
@@ -74,7 +78,7 @@ public class SynoLVM extends Application{
 	private RemoteServer remoteConsole;
 
 	public SynoLVM(boolean gui) {
-		super(gui, "SynoLVM");
+		super(gui, "SynoLVM - " + VERSION.toString());
 	}
 	
 	public void init() {
@@ -94,6 +98,14 @@ public class SynoLVM extends Application{
 			System.exit(-1);
 		}
 		logger.info("Launching Application.");
+		if(this.config.isAutoUpdate()) {
+			this.initAutoUpdater(
+					GITHUB_REPO,
+					VERSION, 
+					config.getStartupScript(),
+					config.isUsePrereleases(),
+					config.getCronSchedule());
+		}
 		remoteConsole = new RemoteServer(this.getConsole(), 13560);
 		remoteConsole.init();
 		remoteConsole.bind();

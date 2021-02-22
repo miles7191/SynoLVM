@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.t07m.synolvm</groupId>
 	<artifactId>SynoLVM</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
 			<groupId>org.yaml</groupId>
@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>com.t07m.application</groupId>
 			<artifactId>BaseApplication</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.t07m.config.yaml</groupId>
