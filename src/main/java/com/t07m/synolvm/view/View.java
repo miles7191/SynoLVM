@@ -36,9 +36,9 @@ public class View {
 	private @Getter SurveillanceStationClient surveillanceStationClient;
 	private @Getter boolean valid;
 
-	private ScreenPixelMonitor screenPixelWatcher;
-	private WindowLocationMonitor windowLocationWatcher;
-	private WindowTitleMonitor windowTitleWatcher;
+	private @Getter ScreenPixelMonitor screenPixelWatcher;
+	private @Getter WindowLocationMonitor windowLocationWatcher;
+	private @Getter WindowTitleMonitor windowTitleWatcher;
 
 	public View(ViewConfig config, SurveillanceStationClient client) {
 		this.viewConfig = config;

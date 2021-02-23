@@ -15,6 +15,9 @@
  */
 package com.t07m.synolvm.view.monitors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.t07m.application.Service;
 import com.t07m.synolvm.SynoLVM;
 import com.t07m.synolvm.view.View;
@@ -24,10 +27,27 @@ import lombok.Getter;
 
 public abstract class ViewMonitor extends Service<SynoLVM>{
 
+	private static final Logger log = LoggerFactory.getLogger(WindowTitleMonitor.class);
+	
 	private final @Getter(AccessLevel.PROTECTED) View view;
 	
 	public ViewMonitor(SynoLVM app, long updateFrequency, View view) {
 		super(app, updateFrequency);
 		this.view = view;
 	}
+	
+	public void process() {
+		if(!getView().withinGracePeriod() && view.isValid()) {
+			synchronized(getView().getSurveillanceStationClient()) {
+				if(!validate()) {
+					if(getView().isValid()) {
+						getView().inValidate();
+						log.info("View failed " + getClass().getSimpleName() + ": " + getView().getViewConfig().getName());
+					}
+				}
+			}
+		}
+	}
+	
+	public abstract boolean validate();
 }

@@ -26,26 +26,13 @@ import com.t07m.synolvm.view.View;
 
 public class WindowTitleMonitor extends ViewMonitor{
 
-	private static final Logger logger = LoggerFactory.getLogger(WindowTitleMonitor.class);
-
 	public WindowTitleMonitor(SynoLVM app, View view) {
 		super(app, TimeUnit.SECONDS.toMillis(10), view);
 	}
-
-	public void process() {
-		if (!getView().withinGracePeriod()) {
-			synchronized(getView().getSurveillanceStationClient()) {
-				Window window = getView().getSurveillanceStationClient().getWindow();
-				if (window != null && !window.getTitle().equals("Synology Surveillance Station Client")) {
-					return;
-				}else {
-					if(getView().isValid()) {
-						getView().inValidate();
-						logger.info("View failed WindowTitleMonitor: " + getView().getViewConfig().getName());
-					}
-				}
-			}
-		}
+	
+	public boolean validate() {
+		Window window = getView().getSurveillanceStationClient().getWindow();
+		return (window != null && !window.getTitle().equals("Synology Surveillance Station Client"));
 	}
 
 }

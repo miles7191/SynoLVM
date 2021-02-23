@@ -108,8 +108,8 @@ public class ViewManager extends Service<SynoLVM>{
 					}else if(v.getViewConfig().isEnabled() && v.getSurveillanceStationClient().screenAvailable(v.getViewConfig().getMonitor())) {
 						if(lastLaunch != null) {
 							if(lastLaunch.getSurveillanceStationClient().isRunning() && lastLaunch.withinGracePeriod()) {
-								Window w = lastLaunch.getSurveillanceStationClient().getWindow();
-								if(w == null || (w != null && w.getTitle().equals("Synology Surveillance Station Client"))) {
+								if((lastLaunch.getWindowTitleWatcher() != null && !lastLaunch.getWindowTitleWatcher().validate()) ||
+										(lastLaunch.getWindowLocationWatcher() != null && !lastLaunch.getWindowLocationWatcher().validate())) {
 									return;
 								}
 							}

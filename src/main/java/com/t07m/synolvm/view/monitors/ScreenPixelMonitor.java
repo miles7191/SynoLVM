@@ -36,38 +36,32 @@ public class ScreenPixelMonitor extends ViewMonitor {
 	public ScreenPixelMonitor(SynoLVM app, View view) {
 		super(app, TimeUnit.SECONDS.toMillis(30), view);
 	}
-
-	public void process() {
-		if(!getView().withinGracePeriod()) {
-			synchronized(getView().getSurveillanceStationClient()) {
-				Screen screen = getView().getSurveillanceStationClient().getScreen();
-				if(screen != null) {
-					try {
-						Robot robot = new Robot();
-						if(lastPass == null) {
-							lastPass = robot.createScreenCapture(screen.getRect(false));
-						}else {
-							BufferedImage current = robot.createScreenCapture(screen.getRect(false));
-							if (lastPass.getWidth() == current.getWidth() && lastPass.getHeight() == current.getHeight()) {
-								for (int x = 0; x < lastPass.getWidth(); x++) {
-									for (int y = 0; y < lastPass.getHeight(); y++) {
-										if (lastPass.getRGB(x, y) != current.getRGB(x, y)) {
-											lastPass = current;
-											return; 
-										}
-									} 
+	
+	public boolean validate() {
+		Screen screen = getView().getSurveillanceStationClient().getScreen();
+		if(screen != null) {
+			try {
+				Robot robot = new Robot();
+				if(lastPass == null) {
+					lastPass = robot.createScreenCapture(screen.getRect(false));
+					return true;
+				}else {
+					BufferedImage current = robot.createScreenCapture(screen.getRect(false));
+					if (lastPass.getWidth() == current.getWidth() && lastPass.getHeight() == current.getHeight()) {
+						for (int x = 0; x < lastPass.getWidth(); x++) {
+							for (int y = 0; y < lastPass.getHeight(); y++) {
+								if (lastPass.getRGB(x, y) != current.getRGB(x, y)) {
+									lastPass = current;
+									return true; 
 								}
-							}
-							lastPass = null;
-							if(getView().isValid()) {
-								getView().inValidate();
-								logger.info("View failed ScreenPixelWatcher: " + getView().getViewConfig().getName());
-							}
-
+							} 
 						}
-					} catch (AWTException e) {}
+					}
+					lastPass = null;
+					return false;
 				}
-			}
+			} catch (AWTException e) {}
 		}
+		return false;
 	}
 }
