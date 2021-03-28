@@ -46,27 +46,31 @@ public class UserMonitor extends SystemMonitor{
 			lastX = p.x;
 			lastY = p.y;
 			if(pauseThread == null) {
-				pauseThread = new Thread() {
-					public void run() {
-						logger.info("User detected. Pausing application.");
-						getApp().pauseExecution();
-						while(userPresent()) {
-							process();
-							try {
-								Thread.sleep(100);
-							} catch (InterruptedException e) {}
-						}
-						logger.info("Resuming application.");
-						Mouse.setPosition(0, 0);
-						lastX = 0;
-						lastY = 0;
-						getApp().resumeExecution();
-						pauseThread = null;
-					}
-				};
+				pauseThread = createNewPauseThread();
 				pauseThread.start();
 			}
 		}
+	}
+
+	private Thread createNewPauseThread() {
+		return new Thread() {
+			public void run() {
+				logger.info("User detected. Pausing application.");
+				getApp().pauseExecution();
+				while(userPresent()) {
+					process();
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {}
+				}
+				logger.info("Resuming application.");
+				Mouse.setPosition(0, 0);
+				lastX = 0;
+				lastY = 0;
+				getApp().resumeExecution();
+				pauseThread = null;
+			}
+		};
 	}
 
 	public boolean userPresent() {

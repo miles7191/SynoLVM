@@ -28,9 +28,9 @@ import com.t07m.synolvm.handlers.ScreenHandler.Screen;
 public class ScreenCheck implements StartupCheck{
 
 	private static final Logger logger = LoggerFactory.getLogger(ScreenCheck.class);
-	
+
 	private final int SecondsToReboot = (int) TimeUnit.MINUTES.toSeconds(3);
-	
+
 	public boolean check() {
 		if(GraphicsEnvironment.isHeadless()) {
 			return false;
@@ -39,16 +39,19 @@ public class ScreenCheck implements StartupCheck{
 		Screen[] screens = ScreenHandler.queryScreens();
 		if(screens.length > 0) {
 			for(int i = 0; i < screens.length; i++) {
-				Screen screen = screens[i];
-				if(screen.getScale() != 1.0) {
-					logger.warn("Display scaling is set to " + (int) (screen.getScale()*100) + "% for Screen: " + i);
-				}
+				warnDisplayScale(screens, i);
 			}
-		}else {
-			logger.error("ScreenHandler did not find any screens!");
-			return false;
+			return true;
 		}
-		return true;
+		logger.error("ScreenHandler did not find any screens!");
+		return false;
+	}
+
+	private void warnDisplayScale(Screen[] screens, int i) {
+		Screen screen = screens[i];
+		if(screen.getScale() != 1.0) {
+			logger.warn("Display scaling is set to " + (int) (screen.getScale()*100) + "% for Screen: " + i);
+		}
 	}
 
 	public void performCorrectiveAction() {
@@ -58,19 +61,31 @@ public class ScreenCheck implements StartupCheck{
 			Runtime.getRuntime().exec("shutdown -r -t " + SecondsToReboot);
 			Thread.sleep(1000);
 		} catch (IOException | InterruptedException e) {}
-		while(System.currentTimeMillis() - start < TimeUnit.SECONDS.toMillis(SecondsToReboot-1)) {
-			if(!GraphicsEnvironment.isHeadless() && ScreenHandler.queryScreens().length > 0) {
-				try {
-					logger.info("System is no longer headless. Attempting to cancel reboot.");
-					Runtime.getRuntime().exec("shutdown -a");
-					return;
-				} catch (IOException e) {}
+		while(withinGracePeriod(start)) {
+			if(!systemHeadless()) {
+				CancelShutdown();
+				return;
 			}
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {}
 		}
 		System.exit(0);
+	}
+
+	private boolean withinGracePeriod(long start) {
+		return System.currentTimeMillis() - start < TimeUnit.SECONDS.toMillis(SecondsToReboot-1);
+	}
+
+	private void CancelShutdown() {
+		try {
+			logger.info("System is no longer headless. Attempting to cancel reboot.");
+			Runtime.getRuntime().exec("shutdown -a");
+		} catch (IOException e) {}
+	}
+
+	private boolean systemHeadless() {
+		return GraphicsEnvironment.isHeadless() || ScreenHandler.queryScreens().length == 0;
 	}
 
 }

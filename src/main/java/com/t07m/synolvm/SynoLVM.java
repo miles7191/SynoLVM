@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Matthew Rosato
+ - * Copyright (C) 2020 Matthew Rosato
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 
 public class SynoLVM extends Application{
 
-	public static final Version VERSION = Version.valueOf("1.0.2");
+	public static final Version VERSION = Version.valueOf("1.0.3");
 	public static final String GITHUB_REPO = "miles7191/SynoLVM";
 	
 	public static void main(String[] args) {

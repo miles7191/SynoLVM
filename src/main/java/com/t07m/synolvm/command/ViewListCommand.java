@@ -38,7 +38,7 @@ import joptsimple.OptionSet;
 public class ViewListCommand extends Command {
 
 	private static final Logger logger = LoggerFactory.getLogger(ViewListCommand.class);
-	
+
 	private final SynoLVM lvm;
 
 	public ViewListCommand(SynoLVM lvm) {
@@ -56,39 +56,55 @@ public class ViewListCommand extends Command {
 		synchronized(config) {
 			ViewConfig[] views = config.getViewConfigurations();
 			if(optionSet.has("view")) {
-				String name = (String)optionSet.valueOf("view");
-				for(ViewConfig vc : views) {
-					if(name.equalsIgnoreCase(vc.getName())) {
-						logger.info("Name: " + vc.getName() + System.lineSeparator() +
-								"Enabled: " + vc.isEnabled() + System.lineSeparator() +
-								"Priority: " + vc.getPriority() + System.lineSeparator() +
-								"Monitor: " + vc.getMonitor());
-						if(vc.getRegistry().getLoginHistory() != null) {
-							try {
-								Gson gson = new Gson();
-								JsonArray jsonArray = gson.fromJson(vc.getRegistry().getLoginHistory().replace("\\\"", "\""), JsonArray.class);
-								JsonObject json = jsonArray.get(0).getAsJsonObject();
-								for(Entry<String, JsonElement> entry : json.entrySet()) {
-									if(entry.getValue() != null && entry.getValue().getAsString().length() > 0) {
-										logger.info(entry.getKey() + ": " + entry.getValue().getAsString());
-									}
-								}
-							}catch(JsonSyntaxException e) {
-								e.printStackTrace();
-							}
-						}
-						return;
-					}
-				}
-				logger.warn("Unable to find view: " + name);
-			}else {
-				if(views.length > 0) {
-					for(ViewConfig vc : views) {
-						logger.info(vc.getName() + " - " + (vc.isEnabled() ? "Enabled" : "Disabled") + " P:" +vc.getPriority());
-					}
-				}else {
-					logger.info("No views loaded.");
-				}
+				printSingleView(optionSet, views);
+				return;
+			}
+			printAllViews(views);
+		}
+	}
+
+	private void printAllViews(ViewConfig[] views) {
+		if(views.length > 0) {
+			for(ViewConfig vc : views) {
+				logger.info(vc.getName() + " - " + (vc.isEnabled() ? "Enabled" : "Disabled") + " P:" +vc.getPriority());
+			}
+			return;
+		}
+		logger.info("No views loaded.");
+	}
+
+	private void printSingleView(OptionSet optionSet, ViewConfig[] views) {
+		String name = (String)optionSet.valueOf("view");
+		for(ViewConfig vc : views) {
+			if(name.equalsIgnoreCase(vc.getName())) {
+				printViewConfig(vc);
+				return;
+			}
+		}
+		logger.warn("Unable to find view: " + name);
+	}
+
+	private void printViewConfig(ViewConfig vc) {
+		logger.info("Name: " + vc.getName() + System.lineSeparator() +
+				"Enabled: " + vc.isEnabled() + System.lineSeparator() +
+				"Priority: " + vc.getPriority() + System.lineSeparator() +
+				"Monitor: " + vc.getMonitor());
+		if(vc.getRegistry().getLoginHistory() != null) {
+			try {
+				printLoginHistory(vc);
+			}catch(JsonSyntaxException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void printLoginHistory(ViewConfig vc) {
+		Gson gson = new Gson();
+		JsonArray jsonArray = gson.fromJson(vc.getRegistry().getLoginHistory().replace("\\\"", "\""), JsonArray.class);
+		JsonObject json = jsonArray.get(0).getAsJsonObject();
+		for(Entry<String, JsonElement> entry : json.entrySet()) {
+			if(entry.getValue() != null && entry.getValue().getAsString().length() > 0) {
+				logger.info(entry.getKey() + ": " + entry.getValue().getAsString());
 			}
 		}
 	}

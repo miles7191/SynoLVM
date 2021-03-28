@@ -31,18 +31,23 @@ public class RougeClientCheck implements StartupCheck{
 	public boolean check() {
 		logger.info("Checking for rouge Surveillance Station Clients...");
 		Iterator<ProcessHandle> itr = ProcessHandle.allProcesses().iterator();
-		boolean failed = false;
 		while(itr.hasNext()) {
-			ProcessHandle ph = itr.next();
-			if(ph.info().command().isPresent()) {
-				String command = ph.info().command().get();
-				if(command != null && command.toLowerCase().endsWith("synologysurveillancestationclient.exe")) {
-					failed = true;
-					rouges.add(ph);
-				}
+			ProcessHandle processHandle = itr.next();
+			if(isSurveillanceStation(processHandle)) {
+				rouges.add(processHandle);
 			}
 		}
-		return !failed;
+		return rouges.size() == 0;
+	}
+
+	private boolean isSurveillanceStation(ProcessHandle processHandle) {
+		if(processHandle.info().command().isPresent()) {
+			String command = processHandle.info().command().get();
+			if(command != null && command.toLowerCase().endsWith("synologysurveillancestationclient.exe")) {
+				return true;
+			}
+		}
+		return false;
 	}	
 
 	public void performCorrectiveAction() {

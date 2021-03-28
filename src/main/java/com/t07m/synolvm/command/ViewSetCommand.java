@@ -65,32 +65,36 @@ public class ViewSetCommand extends Command {
 			synchronized(config) {
 				for(ViewConfig vc : lvm.getConfig().getViewConfigurations()) {
 					if(name.equalsIgnoreCase(vc.getName())) {
-						if(optionSet.has("enable")) {
-							vc.setEnabled(true);
-							logger.info(vc.getName() + ": Enabled");
-						}else if(optionSet.has("disable")) {
-							vc.setEnabled(false);
-							logger.info(vc.getName() + ": Disabled");
-						}
-						if(optionSet.has("monitor")) {
-							vc.setMonitor(((Integer)optionSet.valueOf("monitor")).intValue());
-							logger.info(vc.getName() + " Monitor: " + vc.getMonitor());
-						}
-						if(optionSet.has("priority")) {
-							vc.setPriority(((Integer)optionSet.valueOf("priority")).intValue());
-							logger.info(vc.getName() + " Priority: " + vc.getPriority());
-						}
-						try {
-							config.save();
-							logger.info("Successfully modified view: " + vc.getName());
-						} catch (InvalidConfigurationException e) {
-							logger.error("View Set was unable to save the configuration to disk. Changes will not persist through restart!");
-						}
+						setValues(optionSet, config, vc);
 						return;
 					}
 				}
 			}
 			logger.warn("Unable to find view.");
+		}
+	}
+
+	private void setValues(OptionSet optionSet, LVMConfig config, ViewConfig vc) {
+		if(optionSet.has("enable")) {
+			vc.setEnabled(true);
+			logger.info(vc.getName() + ": Enabled");
+		}else if(optionSet.has("disable")) {
+			vc.setEnabled(false);
+			logger.info(vc.getName() + ": Disabled");
+		}
+		if(optionSet.has("monitor")) {
+			vc.setMonitor(((Integer)optionSet.valueOf("monitor")).intValue());
+			logger.info(vc.getName() + " Monitor: " + vc.getMonitor());
+		}
+		if(optionSet.has("priority")) {
+			vc.setPriority(((Integer)optionSet.valueOf("priority")).intValue());
+			logger.info(vc.getName() + " Priority: " + vc.getPriority());
+		}
+		try {
+			config.save();
+			logger.info("Successfully modified view: " + vc.getName());
+		} catch (InvalidConfigurationException e) {
+			logger.error("View Set was unable to save the configuration to disk. Changes will not persist through restart!");
 		}
 	}
 

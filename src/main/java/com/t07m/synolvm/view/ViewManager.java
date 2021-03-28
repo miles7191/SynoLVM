@@ -55,90 +55,128 @@ public class ViewManager extends Service<SynoLVM>{
 			List<ViewConfig> viewConfigs = new ArrayList<ViewConfig>(Arrays.asList(getApp().getConfig().getViewConfigurations()));
 			synchronized(views) {
 				Iterator<View> itr = views.iterator();
-				while(itr.hasNext()) {
-					View v = itr.next();
-					boolean found = false;
-					for(ViewConfig vc : viewConfigs) {
-						if(vc.getName().equalsIgnoreCase(v.getViewConfig().getName())) {
-							if(!v.getViewConfig().equals(vc)) {
-								v.setViewConfig(vc);
-							}
-							viewConfigs.remove(vc);
-							found = true;
-							break;
-						}
-					}
-					if(!found) {
-						itr.remove();
-						cleanupRemovedView(v);
-						logger.info("Unloaded View: " + v.getViewConfig().getName());
-					}
-				}
+				cleanupUnusedViewConfigs(viewConfigs, itr);
 				for(ViewConfig vc : viewConfigs) {
 					addView(vc);
 				}
 			}
 		}
 		synchronized(views) {
-			views.sort(new Comparator<View>() {
-				public int compare(View o1, View o2) {
-					return Integer.compare(o2.getViewConfig().getPriority(), o1.getViewConfig().getPriority());
-				}
-			});
+			sortViews();
 			boolean foundInvalid = false;
-			for(View v : views) {
+			for(View view : views) {
 				if(foundInvalid) {
-					if(v.getSurveillanceStationClient().isRunning()) {
-						logger.info("Killing View For Priority View: " + v.getViewConfig().getName());
-						v.stop();
+					stopViewForPriorityView(view);
+				}
+				if(!foundInvalid){
+					if(view.getSurveillanceStationClient().isRunning()) {
+						foundInvalid = !validateView(view);
 					}
-				}else {
-					if(v.getSurveillanceStationClient().isRunning()) {
-						if(!v.getViewConfig().isEnabled()) {
-							logger.info("View No Longer Enabled. Killing View: " + v.getViewConfig().getName());
-							v.stop();
-						}
-						if(!v.isValid() && !v.withinGracePeriod()) {
-							logger.info("View Invalidated. Killing View: " + v.getViewConfig().getName());
-							v.stop();
-							if(v.getSurveillanceStationClient().screenAvailable(v.getViewConfig().getMonitor())) {
-								foundInvalid = true;
-							}
-						}
-					}else if(v.getViewConfig().isEnabled() && v.getSurveillanceStationClient().screenAvailable(v.getViewConfig().getMonitor())) {
-						if(lastLaunch != null) {
-							if(lastLaunch.getSurveillanceStationClient().isRunning() && lastLaunch.withinGracePeriod()) {
-								if((lastLaunch.getWindowTitleWatcher() != null && !lastLaunch.getWindowTitleWatcher().validate()) ||
-										(lastLaunch.getWindowLocationWatcher() != null && !lastLaunch.getWindowLocationWatcher().validate())) {
-									return;
-								}
-							}
-						}
-						if(registryCache == null) {
-							registryCache = RegistryHandler.exportRegistry();
-							logger.debug("Caching existing system registry.");
-						}
-						logger.info("Launching View: " + v.getViewConfig().getName());
-						if(v.launch(getApp())) {
-							lastLaunch = v;
-							for(ViewMonitor vw : v.getViewWatchers()) {
-								if(vw != null) {
-									getApp().registerService(vw);
-								}
-							}
-							foundInvalid = true;
+					if(!view.getSurveillanceStationClient().isRunning() && view.getViewConfig().isEnabled() && view.getSurveillanceStationClient().screenAvailable(view.getViewConfig().getMonitor())) {
+						if(lastLaunchCheck()) {
+							cacheRegistry();
+							foundInvalid = !launchView(view);
 						}
 					}
 				}
 			}
 		}
 		if(registryCache != null && lastLaunch != null && !lastLaunch.withinGracePeriod()) {
-			if(RegistryHandler.importRegistryToSystem(registryCache)) {
-				logger.debug("Restored cached system registry.");
-				registryCache = null;
-			}else {
-				logger.debug("Failed to restore cached system registry.");
+			restoreRegistryCache();
+		}
+	}
+
+	private void cleanupUnusedViewConfigs(List<ViewConfig> viewConfigs, Iterator<View> itr) {
+		while(itr.hasNext()) {
+			View v = itr.next();
+			boolean found = false;
+			for(ViewConfig vc : viewConfigs) {
+				if(vc.getName().equalsIgnoreCase(v.getViewConfig().getName())) {
+					if(!v.getViewConfig().equals(vc)) {
+						v.setViewConfig(vc);
+					}
+					viewConfigs.remove(vc);
+					found = true;
+					break;
+				}
 			}
+			if(!found) {
+				itr.remove();
+				cleanupRemovedView(v);
+				logger.info("Unloaded View: " + v.getViewConfig().getName());
+			}
+		}
+	}
+
+	private void sortViews() {
+		views.sort(new Comparator<View>() {
+			public int compare(View o1, View o2) {
+				return Integer.compare(o2.getViewConfig().getPriority(), o1.getViewConfig().getPriority());
+			}
+		});
+	}
+
+	private boolean lastLaunchCheck() {
+		if(lastLaunch != null) {
+			if(lastLaunch.getSurveillanceStationClient().isRunning() && lastLaunch.withinGracePeriod()) {
+				if((lastLaunch.getWindowTitleWatcher() != null && !lastLaunch.getWindowTitleWatcher().validate()) ||
+						(lastLaunch.getWindowLocationWatcher() != null && !lastLaunch.getWindowLocationWatcher().validate())) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	private boolean validateView(View view) {
+		if(!view.getViewConfig().isEnabled()) {
+			logger.info("View No Longer Enabled. Killing View: " + view.getViewConfig().getName());
+			view.stop();
+		}
+		if(!view.isValid() && !view.withinGracePeriod()) {
+			logger.info("View Invalidated. Killing View: " + view.getViewConfig().getName());
+			view.stop();
+			if(view.getSurveillanceStationClient().screenAvailable(view.getViewConfig().getMonitor())) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private void cacheRegistry() {
+		if(registryCache == null) {
+			registryCache = RegistryHandler.exportRegistry();
+			logger.debug("Caching existing system registry.");
+		}
+	}
+
+	private void restoreRegistryCache() {
+		if(RegistryHandler.importRegistryToSystem(registryCache)) {
+			logger.debug("Restored cached system registry.");
+			registryCache = null;
+			return;
+		}
+		logger.debug("Failed to restore cached system registry.");
+	}
+
+	private boolean launchView(View view) {
+		logger.info("Launching View: " + view.getViewConfig().getName());
+		if(view.launch(getApp())) {
+			lastLaunch = view;
+			for(ViewMonitor vw : view.getViewWatchers()) {
+				if(vw != null) {
+					getApp().registerService(vw);
+				}
+			}
+			return false;
+		}
+		return true;
+	}
+
+	private void stopViewForPriorityView(View view) {
+		if(view.getSurveillanceStationClient().isRunning()) {
+			logger.info("Killing View For Priority View: " + view.getViewConfig().getName());
+			view.stop();
 		}
 	}
 

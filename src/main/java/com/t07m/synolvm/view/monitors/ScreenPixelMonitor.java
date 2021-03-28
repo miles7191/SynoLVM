@@ -47,20 +47,27 @@ public class ScreenPixelMonitor extends ViewMonitor {
 					return true;
 				}else {
 					BufferedImage current = robot.createScreenCapture(screen.getRect(false));
-					if (lastPass.getWidth() == current.getWidth() && lastPass.getHeight() == current.getHeight()) {
-						for (int x = 0; x < lastPass.getWidth(); x++) {
-							for (int y = 0; y < lastPass.getHeight(); y++) {
-								if (lastPass.getRGB(x, y) != current.getRGB(x, y)) {
-									lastPass = current;
-									return true; 
-								}
-							} 
-						}
+					if(isImageDifferentFromLast(current)) {
+						return true;
 					}
 					lastPass = null;
 					return false;
 				}
 			} catch (AWTException e) {}
+		}
+		return false;
+	}
+
+	private boolean isImageDifferentFromLast(BufferedImage current) {
+		if (lastPass.getWidth() == current.getWidth() && lastPass.getHeight() == current.getHeight()) {
+			for (int x = 0; x < lastPass.getWidth(); x++) {
+				for (int y = 0; y < lastPass.getHeight(); y++) {
+					if (lastPass.getRGB(x, y) != current.getRGB(x, y)) {
+						lastPass = current;
+						return true; 
+					}
+				} 
+			}
 		}
 		return false;
 	}

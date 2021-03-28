@@ -50,32 +50,39 @@ public class ScreensCommand extends Command{
 	public void process(OptionSet optionSet, Console console) {
 		synchronized(displaySync) {
 			if(!displaying) {
-				JFrame[] frames = createFrames(ScreenHandler.queryScreens());
-				if(frames.length > 0) {
-					displaying = true;
-					for(JFrame frame : frames) {
-						frame.setVisible(true);
-					}
-					Thread t = new Thread() {
-						public void run() {
-							long start = System.currentTimeMillis();
-							while(System.currentTimeMillis() - start < displayTime) {
-								try {
-									Thread.sleep(100);
-								} catch (InterruptedException e) {}
-							}
-							for(JFrame frame : frames) {
-								frame.dispose();
-							}
-							synchronized(displaySync) {
-								displaying = false;
-							}
-						}
-					};
-					t.start();
-				}
+				displayFrames();
 			}
 		}
+	}
+
+	private void displayFrames() {
+		JFrame[] frames = createFrames(ScreenHandler.queryScreens());
+		if(frames.length > 0) {
+			displaying = true;
+			for(JFrame frame : frames) {
+				frame.setVisible(true);
+			}
+			createDisposeThread(frames).start();
+		}
+	}
+
+	private Thread createDisposeThread(JFrame[] frames) {
+		return new Thread() {
+			public void run() {
+				long start = System.currentTimeMillis();
+				while(System.currentTimeMillis() - start < displayTime) {
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {}
+				}
+				for(JFrame frame : frames) {
+					frame.dispose();
+				}
+				synchronized(displaySync) {
+					displaying = false;
+				}
+			}
+		};
 	}
 
 	private JFrame[] createFrames(Screen[] screens) {

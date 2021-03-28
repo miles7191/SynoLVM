@@ -35,7 +35,7 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 public class ViewExportCommand extends Command{
 
 	private static final Logger logger = LoggerFactory.getLogger(ViewExportCommand.class);
-	
+
 	private final SynoLVM lvm;
 
 	public ViewExportCommand(SynoLVM lvm) {
@@ -76,21 +76,26 @@ public class ViewExportCommand extends Command{
 			}
 			ViewConfig vc = lvm.getViewConfigFactory().loadNewViewConfig();
 			if(vc != null) {
-				vc.setName(name);
-				vc.setMonitor(monitor);
-				vc.setEnabled(enabled);
-				vc.setPriority(priority);
-				currentViews.add(vc);
-				config.setViewConfigurations(currentViews.toArray(new ViewConfig[currentViews.size()]));
-				try {
-					config.save();
-					logger.info("Successfully exported view: " + vc.getName());
-				} catch (InvalidConfigurationException e) {
-					logger.error("Warning! View Export was unable to save the configuration to disk. Changes will not persist through restart!");
-				}
-			}else {
-				logger.warn("Unable to export view!");
+				saveView(name, monitor, priority, enabled, config, currentViews, vc);
+				return;
 			}
+			logger.warn("Unable to export view!");
+		}
+	}
+
+	private void saveView(String name, int monitor, int priority, boolean enabled, LVMConfig config,
+			List<ViewConfig> currentViews, ViewConfig vc) {
+		vc.setName(name);
+		vc.setMonitor(monitor);
+		vc.setEnabled(enabled);
+		vc.setPriority(priority);
+		currentViews.add(vc);
+		config.setViewConfigurations(currentViews.toArray(new ViewConfig[currentViews.size()]));
+		try {
+			config.save();
+			logger.info("Successfully exported view: " + vc.getName());
+		} catch (InvalidConfigurationException e) {
+			logger.error("Warning! View Export was unable to save the configuration to disk. Changes will not persist through restart!");
 		}
 	}
 }

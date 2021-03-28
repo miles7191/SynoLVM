@@ -55,18 +55,22 @@ public class ViewDeleteCommand extends Command {
 			List<ViewConfig> currentViews = new ArrayList<ViewConfig>(Arrays.asList(lvm.getConfig().getViewConfigurations()));
 			for(ViewConfig vc : currentViews) {
 				if(name.equalsIgnoreCase(vc.getName())) {
-					currentViews.remove(vc);
-					config.setViewConfigurations(currentViews.toArray(new ViewConfig[currentViews.size()]));
-					try {
-						config.save();
-						logger.info("Successfully deleted view: " + vc.getName());
-					} catch (InvalidConfigurationException e) {
-						logger.error("View Export was unable to save the configuration to disk. Changes will not persist through restart!");
-					}
+					deleteView(config, currentViews, vc);
 					return;
 				}
 			}
 			logger.warn("Unable to find view: " + name);
+		}
+	}
+
+	private void deleteView(LVMConfig config, List<ViewConfig> currentViews, ViewConfig vc) {
+		currentViews.remove(vc);
+		config.setViewConfigurations(currentViews.toArray(new ViewConfig[currentViews.size()]));
+		try {
+			config.save();
+			logger.info("Successfully deleted view: " + vc.getName());
+		} catch (InvalidConfigurationException e) {
+			logger.error("View Export was unable to save the configuration to disk. Changes will not persist through restart!");
 		}
 	}
 	

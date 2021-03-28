@@ -58,20 +58,26 @@ public abstract class RegistryHandler {
 				File tf = newTempFile();
 				if(tf != null) {
 					if(saveRegistryToFile(registry, tf)) {
-						try {
-							Process p = Runtime.getRuntime().exec("REG IMPORT \"" + tf.getAbsolutePath() + "\"");
-							if (p.waitFor(10L, TimeUnit.SECONDS)) {
-								tf.delete();
-								return true;
-							} 
-							p.destroyForcibly();
-							logger.error("Registry import terminated due to process hang.");
-						} catch (IOException|InterruptedException e) {} 
+						boolean success = executeRegistryImport(tf); 
 						tf.delete();
+						return success;
 					}
 				}
 			}
 		}
+		return false;
+	}
+
+	private static boolean executeRegistryImport(File tf) {
+		try {
+			Process p = Runtime.getRuntime().exec("REG IMPORT \"" + tf.getAbsolutePath() + "\"");
+			if (p.waitFor(10L, TimeUnit.SECONDS)) {
+				tf.delete();
+				return true;
+			} 
+			p.destroyForcibly();
+			logger.error("Registry import terminated due to process hang.");
+		} catch (IOException|InterruptedException e) {}
 		return false;
 	}
 
@@ -89,36 +95,44 @@ public abstract class RegistryHandler {
 	public static boolean exportRegistryTo(RegistryConfig registry, boolean setRecommendedValues) {
 		if(registry != null) {
 			File file = newTempFile();
+			boolean success = false;
 			if(exportRegistryToFile(REGISTRY_HIVE, file)) {
 				try(Scanner scanner = new Scanner(file, Charset.forName("UTF-16"))){
-					String header="";
-					String values="";
-					int count = 0;
-					while(scanner.hasNextLine()) {
-						if(count < 3) {
-							header+=scanner.nextLine()+System.lineSeparator();
-						}else{
-							values+=scanner.nextLine();
-						}
-						count++;
-					}
-					registry.setHeader(header);
-					Map<String, Object> valueMap = parseValuesToMap(values);
-					file.delete();
-					if(valueMap != null) {
-						setValues(registry, valueMap);
-						if(setRecommendedValues) {
-							setRecommendedValues(registry);
-							trimLoginHistory(registry);
-						}
-						return true;
-					}
+					success = readValuesToRegistryConfig(registry, setRecommendedValues, file, scanner);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 			file.delete();
+			return success;
 		}		
+		return false;
+	}
+
+	private static boolean readValuesToRegistryConfig(RegistryConfig registry, boolean setRecommendedValues, File file,
+			Scanner scanner) {
+		String header="";
+		String values="";
+		int count = 0;
+		while(scanner.hasNextLine()) {
+			if(count < 3) {
+				header+=scanner.nextLine()+System.lineSeparator();
+			}else{
+				values+=scanner.nextLine();
+			}
+			count++;
+		}
+		registry.setHeader(header);
+		Map<String, Object> valueMap = parseValuesToMap(values);
+		file.delete();
+		if(valueMap != null) {
+			setValues(registry, valueMap);
+			if(setRecommendedValues) {
+				setRecommendedValues(registry);
+				trimLoginHistory(registry);
+			}
+			return true;
+		}
 		return false;
 	}
 
@@ -249,17 +263,22 @@ public abstract class RegistryHandler {
 	private static boolean exportRegistryToFile(String path, File file) {
 		if (file != null) {
 			synchronized(RegistryLock) {
-				try {
-					Process p = Runtime.getRuntime().exec("REG EXPORT \"" + path + "\" \"" + file.getAbsolutePath() + "\" /y");
-					if (p.waitFor(10L, TimeUnit.SECONDS)) {
-						return true;
-					} 
-					p.destroyForcibly();
-				} catch (IOException|InterruptedException e) {
-					e.printStackTrace();
-				} 
+				return executeRegistryExport(path, file); 
 			}
 		} 
+		return false;
+	}
+
+	private static boolean executeRegistryExport(String path, File file) {
+		try {
+			Process p = Runtime.getRuntime().exec("REG EXPORT \"" + path + "\" \"" + file.getAbsolutePath() + "\" /y");
+			if (p.waitFor(10L, TimeUnit.SECONDS)) {
+				return true;
+			} 
+			p.destroyForcibly();
+		} catch (IOException|InterruptedException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
