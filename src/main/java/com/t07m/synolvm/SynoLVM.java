@@ -29,7 +29,7 @@ import com.t07m.console.swing.ConsoleWindow;
 import com.t07m.synolvm.command.PauseCommand;
 import com.t07m.synolvm.command.ReloadCommand;
 import com.t07m.synolvm.command.ResumeCommand;
-import com.t07m.synolvm.command.ScreensCommand;
+import com.t07m.synolvm.command.DisplaysCommand;
 import com.t07m.synolvm.command.ViewDeleteCommand;
 import com.t07m.synolvm.command.ViewExportCommand;
 import com.t07m.synolvm.command.ViewListCommand;
@@ -52,7 +52,6 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 public class SynoLVM extends Application{
 
 	public static final Version VERSION = Version.valueOf("1.0.3");
-	public static final String GITHUB_REPO = "miles7191/SynoLVM";
 	
 	public static void main(String[] args) {
 		boolean gui = true;
@@ -98,14 +97,6 @@ public class SynoLVM extends Application{
 			System.exit(-1);
 		}
 		logger.info("Launching Application.");
-		if(this.config.isAutoUpdate()) {
-			this.initAutoUpdater(
-					GITHUB_REPO,
-					VERSION, 
-					config.getStartupScript(),
-					config.isUsePrereleases(),
-					config.getCronSchedule());
-		}
 		remoteConsole = new RemoteServer(this.getConsole(), 13560);
 		remoteConsole.init();
 		remoteConsole.bind();
@@ -122,7 +113,7 @@ public class SynoLVM extends Application{
 				new ViewSetCommand(this),
 				new PauseCommand(this),
 				new ResumeCommand(this),
-				new ScreensCommand());
+				new DisplaysCommand());
 		this.viewConfigFactory = new ViewConfigFactory(this.config);
 		this.surveillanceStationFactory = new SurveillanceStationFactory(new File(this.config.getSurveillanceStationPath()));
 		this.viewManager = new ViewManager(this);

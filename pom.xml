@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>com.t07m.application</groupId>
 			<artifactId>BaseApplication</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.t07m.config.yaml</groupId>
@@ -50,12 +50,12 @@
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
-			<version>5.6.0</version>
+			<version>5.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna-platform</artifactId>
-			<version>5.6.0</version>
+			<version>5.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.t07m.remoteconsole</groupId>

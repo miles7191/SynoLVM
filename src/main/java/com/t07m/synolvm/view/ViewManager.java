@@ -72,7 +72,7 @@ public class ViewManager extends Service<SynoLVM>{
 					if(view.getSurveillanceStationClient().isRunning()) {
 						foundInvalid = !validateView(view);
 					}
-					if(!view.getSurveillanceStationClient().isRunning() && view.getViewConfig().isEnabled() && view.getSurveillanceStationClient().screenAvailable(view.getViewConfig().getMonitor())) {
+					if(!view.getSurveillanceStationClient().isRunning() && view.getViewConfig().isEnabled() && view.getSurveillanceStationClient().displayAvailable(view.getViewConfig().getMonitor())) {
 						if(lastLaunchCheck()) {
 							cacheRegistry();
 							foundInvalid = !launchView(view);
@@ -136,7 +136,7 @@ public class ViewManager extends Service<SynoLVM>{
 		if(!view.isValid() && !view.withinGracePeriod()) {
 			logger.info("View Invalidated. Killing View: " + view.getViewConfig().getName());
 			view.stop();
-			if(view.getSurveillanceStationClient().screenAvailable(view.getViewConfig().getMonitor())) {
+			if(view.getSurveillanceStationClient().displayAvailable(view.getViewConfig().getMonitor())) {
 				return false;
 			}
 		}

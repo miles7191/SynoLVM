@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Matthew Rosato
+ * Copyright (C) 2021 Matthew Rosato
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,25 @@
  */
 package com.t07m.synolvm;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+
 import org.junit.jupiter.api.Test;
 
-import com.t07m.synolvm.handlers.ScreenHandler;
-import com.t07m.synolvm.handlers.ScreenHandler.Screen;
+class DisplayTest {
 
-class ScreenHandlerTest {
-	
 	@Test
-	void testNew() {
-		Screen[] screens = ScreenHandler.queryScreens();
-		for(ScreenHandler.Screen s : screens) {
-			System.out.println(s.toString());
+	void test() {
+		GraphicsDevice[] gds = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+		for(GraphicsDevice gd : gds) {
+			System.out.println(gd.getIDstring());
 		}
-		assert(screens.length > 0);
+		/**
+		for(Display display : DisplayHandler.queryDisplays()) {
+			System.out.println(display);
+		}
+		**/
+	
 	}
+
 }

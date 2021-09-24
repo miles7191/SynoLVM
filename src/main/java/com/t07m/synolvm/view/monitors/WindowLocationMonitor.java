@@ -31,7 +31,7 @@ public class WindowLocationMonitor extends ViewMonitor {
 
 	public boolean validate() {
 		return (getView().getViewConfig().getMonitor() == getView().getSurveillanceStationClient().getMonitor() && 
-				getView().getSurveillanceStationClient().isCorrectScreen() &&
+				getView().getSurveillanceStationClient().isCorrectDisplay() &&
 				getView().getSurveillanceStationClient().isFullScreen());
 	}
 }

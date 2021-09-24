@@ -69,7 +69,7 @@ class SurveillanceStationFactoryTest {
 		if(vc != null && ssc.launch(TimeUnit.SECONDS.toMillis(10), 0, vc.getRegistry())) {
 			System.out.println(ssc.getTitle());
 			System.out.println(ssc.getBounds());
-			System.out.println(ssc.isCorrectScreen());
+			System.out.println(ssc.isCorrectDisplay());
 			assert(ssc.getWindow() != null);
 			ssc.stop();
 		}else {

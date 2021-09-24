@@ -31,20 +31,20 @@ import javax.swing.SwingConstants;
 
 import com.t07m.console.Command;
 import com.t07m.console.Console;
-import com.t07m.synolvm.handlers.ScreenHandler;
-import com.t07m.synolvm.handlers.ScreenHandler.Screen;
+import com.t07m.synolvm.system.hardware.DisplayHandler;
+import com.t07m.synolvm.system.hardware.DisplayHandler.Display;
 
 import joptsimple.OptionSet;
 
-public class ScreensCommand extends Command{
+public class DisplaysCommand extends Command{
 
 	private final long displayTime = TimeUnit.SECONDS.toMillis(10);
 	
 	private final Object displaySync = new Object();
 	private boolean displaying = false;
 
-	public ScreensCommand() {
-		super("Screens");
+	public DisplaysCommand() {
+		super("Displays");
 	}
 
 	public void process(OptionSet optionSet, Console console) {
@@ -56,7 +56,7 @@ public class ScreensCommand extends Command{
 	}
 
 	private void displayFrames() {
-		JFrame[] frames = createFrames(ScreenHandler.queryScreens());
+		JFrame[] frames = createFrames(DisplayHandler.queryDisplays());
 		if(frames.length > 0) {
 			displaying = true;
 			for(JFrame frame : frames) {
@@ -85,17 +85,19 @@ public class ScreensCommand extends Command{
 		};
 	}
 
-	private JFrame[] createFrames(Screen[] screens) {
+	private JFrame[] createFrames(Display[] displays) {
 		ArrayList<JFrame> frames = new ArrayList<JFrame>();
-		for(int i = 0; i < screens.length; i++) {
-			Screen screen = screens[i];
+		for(int i = 0; i < displays.length; i++) {
+			Display display = displays[i];
 			JFrame frame = new JFrame("Screen: " + i);  
 			JPanel panel = new JPanel();  
-			Rectangle dims = screen.getRect(false);
+			Rectangle dims = display.getRect(false);
 			panel.setBackground(Color.BLACK);
 			panel.setLayout(new GridLayout(0, 1));  
-			JLabel label = new JLabel(i + "", SwingConstants.CENTER);
-			Font font = new Font(Font.SANS_SERIF, Font.BOLD, 432);
+			JLabel label = new JLabel("<html><center>" + display.getNumber() + "<br>" +
+					display.getResolution().width + "x" + display.getResolution().height + "<br>" + 
+					"</center></html>", SwingConstants.CENTER);
+			Font font = new Font(Font.SANS_SERIF, Font.BOLD, 120);
 			label.setForeground(Color.WHITE);
 			label.setFont(font);
 			panel.add(label, BorderLayout.CENTER);  
@@ -106,7 +108,7 @@ public class ScreensCommand extends Command{
 			frame.setVisible(true);
 			frame.setSize(dims.width, dims.height);
 			frame.setVisible(false);
-			frame.setLocation(screen.getX(), screen.getY());
+			frame.setLocation(display.getX(), display.getY());
 			frame.setAlwaysOnTop(true);
 			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			frames.add(frame);

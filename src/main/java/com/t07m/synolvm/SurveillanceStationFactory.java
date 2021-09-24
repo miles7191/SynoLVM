@@ -22,10 +22,10 @@ import java.util.concurrent.TimeUnit;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig.RegistryConfig;
 import com.t07m.synolvm.handlers.LaunchHandler;
 import com.t07m.synolvm.handlers.RegistryHandler;
-import com.t07m.synolvm.handlers.ScreenHandler;
-import com.t07m.synolvm.handlers.ScreenHandler.Screen;
 import com.t07m.synolvm.handlers.WindowHandler;
 import com.t07m.synolvm.handlers.WindowHandler.Window;
+import com.t07m.synolvm.system.hardware.DisplayHandler;
+import com.t07m.synolvm.system.hardware.DisplayHandler.Display;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -78,36 +78,36 @@ public class SurveillanceStationFactory {
 			}
 		}
 
-		public Screen getScreen() {
-			Screen[] screens = ScreenHandler.queryScreens();
-			if(screens != null && screens.length > monitor) {
-				return screens[monitor];
+		public Display getDisplay() {
+			Display[] displays = DisplayHandler.queryDisplays();
+			if(displays != null && displays.length > monitor) {
+				return displays[monitor];
 			}
 			return null;
 		}
 
-		public boolean screenAvailable(int id) {
-			Screen[] screens = ScreenHandler.queryScreens();
-			if(screens != null && screens.length > id) {
-				return screens[id] != null;
+		public boolean displayAvailable(int id) {
+			Display[] displays = DisplayHandler.queryDisplays();
+			if(displays != null && displays.length > id) {
+				return displays[id] != null;
 			}
 			return false;
 		}
 
-		public boolean isCorrectScreen() {
-			Screen screen = getScreen();
+		public boolean isCorrectDisplay() {
+			Display display = getDisplay();
 			Window window = getWindow();
-			if(screen != null && window != null) {
-				return screen.getScaledRect(true).contains(window.getRect());
+			if(display != null && window != null) {
+				return display.getScaledRect(true).contains(window.getRect());
 			}
 			return false;
 		}
 		
 		public boolean isFullScreen() {
-			Screen screen = getScreen();
+			Display display = getDisplay();
 			Window window = getWindow();
-			if(screen != null && window != null) {
-				Rectangle sr = screen.getScaledRect(false);
+			if(display != null && window != null) {
+				Rectangle sr = display.getScaledRect(false);
 				Rectangle wr = window.getRect();
 				return sr.x == wr.x && sr.y == wr.y && sr.width == wr.width && sr.height == wr.height;
 			}
@@ -141,10 +141,10 @@ public class SurveillanceStationFactory {
 				if(!running) {
 					synchronized(RegistryHandler.getRegistryLock()) {
 						this.monitor = monitor;
-						Screen screen = getScreen();
-						Rectangle screenRect = screen.getScaledRect(false);
-						if(screen != null) {
-							registry.setWinGeometry(((int) screenRect.getX())+","+((int) (screenRect.getY()+1))+",1280,720");
+						Display display = getDisplay();
+						Rectangle displayRect = display.getScaledRect(false);
+						if(display != null) {
+							registry.setWinGeometry(((int) displayRect.getX())+","+((int) (displayRect.getY()+1))+",1280,720");
 							if(RegistryHandler.importRegistryToSystem(registry)) {
 								process = LaunchHandler.executeHandler(surveillanceStation);
 								long start = System.currentTimeMillis();

@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.t07m.synolvm.SynoLVM;
-import com.t07m.synolvm.handlers.ScreenHandler.Screen;
+import com.t07m.synolvm.system.hardware.DisplayHandler.Display;
 import com.t07m.synolvm.view.View;
 
 public class ScreenPixelMonitor extends ViewMonitor {
@@ -38,15 +38,15 @@ public class ScreenPixelMonitor extends ViewMonitor {
 	}
 	
 	public boolean validate() {
-		Screen screen = getView().getSurveillanceStationClient().getScreen();
-		if(screen != null) {
+		Display display = getView().getSurveillanceStationClient().getDisplay();
+		if(display != null) {
 			try {
 				Robot robot = new Robot();
 				if(lastPass == null) {
-					lastPass = robot.createScreenCapture(screen.getRect(false));
+					lastPass = robot.createScreenCapture(display.getRect(false));
 					return true;
 				}else {
-					BufferedImage current = robot.createScreenCapture(screen.getRect(false));
+					BufferedImage current = robot.createScreenCapture(display.getRect(false));
 					if(isImageDifferentFromLast(current)) {
 						return true;
 					}

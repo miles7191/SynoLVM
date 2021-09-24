@@ -22,8 +22,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.t07m.synolvm.handlers.ScreenHandler;
-import com.t07m.synolvm.handlers.ScreenHandler.Screen;
+import com.t07m.synolvm.system.hardware.DisplayHandler;
+import com.t07m.synolvm.system.hardware.DisplayHandler.Display;
 
 public class ScreenCheck implements StartupCheck{
 
@@ -36,10 +36,10 @@ public class ScreenCheck implements StartupCheck{
 			return false;
 		}
 		logger.info("Checking system for available screens.");
-		Screen[] screens = ScreenHandler.queryScreens();
-		if(screens.length > 0) {
-			for(int i = 0; i < screens.length; i++) {
-				warnDisplayScale(screens, i);
+		Display[] displays = DisplayHandler.queryDisplays();
+		if(displays.length > 0) {
+			for(int i = 0; i < displays.length; i++) {
+				warnDisplayScale(displays, i);
 			}
 			return true;
 		}
@@ -47,10 +47,10 @@ public class ScreenCheck implements StartupCheck{
 		return false;
 	}
 
-	private void warnDisplayScale(Screen[] screens, int i) {
-		Screen screen = screens[i];
-		if(screen.getScale() != 1.0) {
-			logger.warn("Display scaling is set to " + (int) (screen.getScale()*100) + "% for Screen: " + i);
+	private void warnDisplayScale(Display[] displays, int i) {
+		Display display = displays[i];
+		if(display.getScale() != 1.0) {
+			logger.warn("Display scaling is set to " + (int) (display.getScale()*100) + "% for Screen: " + i);
 		}
 	}
 
@@ -85,7 +85,7 @@ public class ScreenCheck implements StartupCheck{
 	}
 
 	private boolean systemHeadless() {
-		return GraphicsEnvironment.isHeadless() || ScreenHandler.queryScreens().length == 0;
+		return GraphicsEnvironment.isHeadless() || DisplayHandler.queryDisplays().length == 0;
 	}
 
 }

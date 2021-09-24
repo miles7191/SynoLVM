@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm.handlers;
+package com.t07m.synolvm.system.hardware;
 
+import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
@@ -25,40 +26,45 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-public class ScreenHandler {
+public class DisplayHandler {
 
-	public static Screen[] queryScreens() {
+	public static Display[] queryDisplays() {
 		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		ArrayList<Screen> screens = new ArrayList<Screen>();
+		ArrayList<Display> screens = new ArrayList<Display>();
 		try {
+			int i = 0;
 			for(GraphicsDevice device : env.getScreenDevices()) {
 				Rectangle ret = device.getDefaultConfiguration().getBounds();
 				double scale = device.getDefaultConfiguration().getDefaultTransform().getScaleX();
-				screens.add(new Screen(
+				screens.add(new Display(
+						i,
 						(int) (ret.getX()),
 						(int) (ret.getY()),
 						(int) (ret.getX() + ret.getWidth()),
 						(int) (ret.getY() + ret.getHeight()),
 						scale));
+				i++;
 			}
 		}catch (HeadlessException e) {}
-		return screens.toArray(new Screen[screens.size()]);
+		return screens.toArray(new Display[screens.size()]);
 	}
 
 	@ToString
 	@RequiredArgsConstructor
-	public static class Screen {
+	public static class Display{
+
 		private static final int sp = 20;
 
+		private final @Getter int number;
 		private final @Getter int x, y, x2, y2;
 		private final @Getter double scale;
-		
+
 		public Rectangle getRect(boolean padding) {
 			if (padding)
 				return new Rectangle(x-sp, y-sp, x2-x+sp*2, y2-y+sp*2); 
 			return new Rectangle(x, y, x2-x, y2-y);
 		}
-		
+
 		public Rectangle getScaledRect(boolean padding) {
 			int sx = (int) Math.ceil(x*scale);
 			int sy = (int) Math.ceil(y*scale);
@@ -68,5 +74,11 @@ public class ScreenHandler {
 				return new Rectangle(sx-sp, sy-sp, sx2-sx+sp*2, sy2-sy+sp*2); 
 			return new Rectangle(sx, sy, sx2-sx, sy2-sy);
 		}
+
+		public Dimension getResolution() {
+			return new Dimension((int)((x2-x) * scale), (int)((y2-y) * scale));
+		}
+
 	}
+
 }
