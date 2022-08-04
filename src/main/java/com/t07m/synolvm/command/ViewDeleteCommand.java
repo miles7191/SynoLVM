@@ -56,6 +56,7 @@ public class ViewDeleteCommand extends Command {
 			for(ViewConfig vc : currentViews) {
 				if(name.equalsIgnoreCase(vc.getName())) {
 					deleteView(config, currentViews, vc);
+					lvm.getViewManager().refreshConfigs();
 					return;
 				}
 			}

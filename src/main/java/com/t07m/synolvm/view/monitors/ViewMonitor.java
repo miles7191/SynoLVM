@@ -32,7 +32,7 @@ public abstract class ViewMonitor extends Service<SynoLVM>{
 	private final @Getter(AccessLevel.PROTECTED) View view;
 	
 	public ViewMonitor(SynoLVM app, long updateFrequency, View view) {
-		super(app, updateFrequency);
+		super(updateFrequency);
 		this.view = view;
 	}
 	

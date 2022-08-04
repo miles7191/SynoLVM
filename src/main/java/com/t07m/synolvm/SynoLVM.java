@@ -16,7 +16,6 @@
 package com.t07m.synolvm;
 
 import java.awt.Frame;
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -24,12 +23,11 @@ import org.slf4j.LoggerFactory;
 
 import com.github.zafarkhaja.semver.Version;
 import com.t07m.application.Application;
-import com.t07m.console.remote.server.RemoteServer;
 import com.t07m.console.swing.ConsoleWindow;
+import com.t07m.synolvm.command.DisplaysCommand;
 import com.t07m.synolvm.command.PauseCommand;
 import com.t07m.synolvm.command.ReloadCommand;
 import com.t07m.synolvm.command.ResumeCommand;
-import com.t07m.synolvm.command.DisplaysCommand;
 import com.t07m.synolvm.command.ViewDeleteCommand;
 import com.t07m.synolvm.command.ViewExportCommand;
 import com.t07m.synolvm.command.ViewListCommand;
@@ -44,6 +42,7 @@ import com.t07m.synolvm.startup.RougeClientCheck;
 import com.t07m.synolvm.startup.ScreenCheck;
 import com.t07m.synolvm.startup.StartupCheck;
 import com.t07m.synolvm.system.monitors.UserMonitor;
+import com.t07m.synolvm.view.ViewController;
 import com.t07m.synolvm.view.ViewManager;
 
 import lombok.Getter;
@@ -51,7 +50,7 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 
 public class SynoLVM extends Application{
 
-	public static final Version VERSION = Version.valueOf("1.0.3");
+	public static final Version VERSION = Version.valueOf("1.1.1");
 	
 	public static void main(String[] args) {
 		boolean gui = true;
@@ -69,12 +68,10 @@ public class SynoLVM extends Application{
 	
 	private @Getter LVMConfig config;
 	private @Getter ViewConfigFactory viewConfigFactory;
-	private @Getter SurveillanceStationFactory surveillanceStationFactory;
 	private @Getter UserMonitor userMonitor;
 	
 	private @Getter ViewManager viewManager;
-	
-	private RemoteServer remoteConsole;
+	private @Getter ViewController viewController;
 
 	public SynoLVM(boolean gui) {
 		super(gui, "SynoLVM - " + VERSION.toString());
@@ -97,9 +94,6 @@ public class SynoLVM extends Application{
 			System.exit(-1);
 		}
 		logger.info("Launching Application.");
-		remoteConsole = new RemoteServer(this.getConsole(), 13560);
-		remoteConsole.init();
-		remoteConsole.bind();
 		StartupCheck[] startupChecks = new StartupCheck[] {
 				new ScreenCheck(),
 				new GracePeriodCheck(TimeUnit.SECONDS.toMillis(this.config.getLaunchGracePeriod())),
@@ -115,22 +109,19 @@ public class SynoLVM extends Application{
 				new ResumeCommand(this),
 				new DisplaysCommand());
 		this.viewConfigFactory = new ViewConfigFactory(this.config);
-		this.surveillanceStationFactory = new SurveillanceStationFactory(new File(this.config.getSurveillanceStationPath()));
 		this.viewManager = new ViewManager(this);
+		this.viewController = new ViewController(this);
 		this.userMonitor = new UserMonitor(this);
 		for(StartupCheck check : startupChecks) {
 			if(!check.check()) {
 				check.performCorrectiveAction();
 			}
 		}
-		this.registerService(viewManager);
+		this.registerHandler(viewManager);
 		this.registerService(userMonitor);
+		this.registerService(viewController);
 		if(this.getConsole() instanceof ConsoleWindow) {
 			((ConsoleWindow)(this.getConsole())).setState(Frame.ICONIFIED);
 		}
-	}
-	
-	public void cleanup() {
-		remoteConsole.unbind();
 	}
 }

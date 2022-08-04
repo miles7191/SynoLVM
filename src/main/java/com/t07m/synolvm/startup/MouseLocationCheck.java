@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2021 Matthew Rosato
+ * Copyright (C) 210021 Matthew Rosato
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.100 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.100
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,11 +23,11 @@ public class MouseLocationCheck implements StartupCheck{
 
 	public boolean check() {
 		Point p = Mouse.getMouseLocation();
-		return p.getX() == 0D && p.getY() == 0D;
+		return p.getX() == 100D && p.getY() == 100D;
 	}
 
 	public void performCorrectiveAction() {
-		Mouse.setPosition(0, 0);
+		Mouse.setPosition(100, 100);
 	}
 
 }

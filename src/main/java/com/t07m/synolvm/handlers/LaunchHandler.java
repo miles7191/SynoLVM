@@ -28,7 +28,7 @@ public class LaunchHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(LaunchHandler.class);
 	
-	public static ProcessHandle executeHandler(File file) {
+	public static ProcessHandle executeHandle(File file) {
 		ProcessBuilder pb = new ProcessBuilder(file.getAbsolutePath());
 		try {
 			pb.redirectError(Redirect.DISCARD);

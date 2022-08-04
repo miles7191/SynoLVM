@@ -77,6 +77,7 @@ public class ViewExportCommand extends Command{
 			ViewConfig vc = lvm.getViewConfigFactory().loadNewViewConfig();
 			if(vc != null) {
 				saveView(name, monitor, priority, enabled, config, currentViews, vc);
+				lvm.getViewManager().refreshConfigs();
 				return;
 			}
 			logger.warn("Unable to export view!");

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Matthew Rosato
+ * Copyright (C) 2022 Matthew Rosato
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.synolvm.system.monitors;
+package com.t07m.synolvm;
 
-import com.t07m.application.Service;
-import com.t07m.synolvm.SynoLVM;
+import java.io.IOException;
+import java.util.Arrays;
 
-public abstract class SystemMonitor extends Service<SynoLVM>{
-	
-	public SystemMonitor(long updateFrequency) {
-		super(updateFrequency);
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.t07m.synolvm.handlers.ClientApplicationHandler;
+import com.t07m.synolvm.handlers.ClientDownloadHandler;
+
+class DownloadTest {
+
+	private static final Logger logger = LoggerFactory.getLogger(DownloadTest.class);
+
+
+
+	@Test
+	void test() throws IOException {
+		System.out.println(ClientApplicationHandler.getLatestClient());
 	}
 
 }

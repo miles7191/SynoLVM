@@ -1,11 +1,11 @@
 /*
  * Copyright (C) 2021 Matthew Rosato
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.100 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.100
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,19 +28,27 @@ public class UserMonitor extends SystemMonitor{
 
 	private static final Logger logger = LoggerFactory.getLogger(UserMonitor.class);
 	
-	private final long userGracePeriod = TimeUnit.MINUTES.toMillis(2);
+	private final long userGracePeriod = TimeUnit.SECONDS.toMillis(10);
 	private long lastFound = 0;
 
-	private int lastX, lastY;
+	private int lastX = Integer.MAX_VALUE, lastY = Integer.MAX_VALUE;
 	
 	private Thread pauseThread;
+	
+	private SynoLVM app;
 
 	public UserMonitor(SynoLVM app) {
-		super(app, TimeUnit.SECONDS.toMillis(5));
+		super(TimeUnit.SECONDS.toMillis(2));
+		this.app = app;
 	}
 
 	public void process() {
 		Point p = Mouse.getMouseLocation();
+		if(lastX == Integer.MAX_VALUE || lastY == Integer.MAX_VALUE) {
+			lastX = p.x;
+			lastY = p.y;
+			return;
+		}
 		if(p.x != lastX || p.y != lastY) {
 			lastFound = System.currentTimeMillis();
 			lastX = p.x;
@@ -56,7 +64,7 @@ public class UserMonitor extends SystemMonitor{
 		return new Thread() {
 			public void run() {
 				logger.info("User detected. Pausing application.");
-				getApp().pauseExecution();
+				app.pauseExecution();
 				while(userPresent()) {
 					process();
 					try {
@@ -64,10 +72,10 @@ public class UserMonitor extends SystemMonitor{
 					} catch (InterruptedException e) {}
 				}
 				logger.info("Resuming application.");
-				Mouse.setPosition(0, 0);
-				lastX = 0;
-				lastY = 0;
-				getApp().resumeExecution();
+				Mouse.setPosition(100, 100);
+				lastX = 100;
+				lastY = 100;
+				app.resumeExecution();
 				pauseThread = null;
 			}
 		};

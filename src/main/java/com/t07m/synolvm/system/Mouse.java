@@ -19,6 +19,10 @@ import java.awt.AWTException;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Robot;
+import java.awt.image.BufferedImage;
+
+import com.t07m.synolvm.handlers.WindowHandler;
+import com.t07m.synolvm.handlers.WindowHandler.Window;
 
 public class Mouse {
 

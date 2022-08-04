@@ -20,10 +20,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -39,7 +42,7 @@ import joptsimple.OptionSet;
 public class DisplaysCommand extends Command{
 
 	private final long displayTime = TimeUnit.SECONDS.toMillis(10);
-	
+
 	private final Object displaySync = new Object();
 	private boolean displaying = false;
 
@@ -101,6 +104,17 @@ public class DisplaysCommand extends Command{
 			label.setForeground(Color.WHITE);
 			label.setFont(font);
 			panel.add(label, BorderLayout.CENTER);  
+			JButton jButton = new JButton("click to exit");
+		    jButton.setForeground(Color.gray);
+		    jButton.setOpaque(false);
+		    jButton.setContentAreaFilled(false);
+		    jButton.setBorder(BorderFactory.createEmptyBorder());
+		    jButton.addActionListener(new ActionListener() {
+		          public void actionPerformed(ActionEvent param1ActionEvent) {
+		        	 frame.dispose();
+		          }
+		        });
+		    panel.add(jButton, BorderLayout.CENTER);
 			frame.add(panel);  
 			panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
