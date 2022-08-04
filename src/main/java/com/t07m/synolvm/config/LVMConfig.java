@@ -28,6 +28,7 @@ public class LVMConfig extends YamlConfig {
 
 	@Comment("Path To Synology Surveillance Station Executable")
 	private @Getter @Setter String SurveillanceStationPath = "C:\\Program Files\\Synology\\SynologySurveillanceStationClient\\bin\\SynologySurveillanceStationClient.exe";
+	private @Getter @Setter int LaunchGracePeriod = 30;
 	private @Getter @Setter ViewConfig[] ViewConfigurations = new ViewConfig[0];
 
 	public LVMConfig() {
@@ -46,14 +47,22 @@ public class LVMConfig extends YamlConfig {
 		private @Getter @Setter boolean Enabled;
 		private @Getter @Setter int Priority;
 		private @Getter @Setter int Monitor;
-		private @Getter @Setter Registry Registry = new Registry();
+		private @Getter @Setter RegistryConfig Registry = new RegistryConfig();
+		private @Getter @Setter String ClientVersion;
 
 		@ToString
-		public class Registry extends YamlConfig{
+		public class RegistryConfig extends YamlConfig{
 
+			private @Getter @Setter String Header;
+			
+			private @Getter @Setter String AlwaysAskDownloadLocation;
 			private @Getter @Setter String AutoBalance;
 			private @Getter @Setter String AutoLogin;
+			private @Getter @Setter String ClearDownload;
+			private @Getter @Setter String DebugConfig;
 			private @Getter @Setter String DisplayZoom;
+			private @Getter @Setter String DownloadHistory;
+			private @Getter @Setter String DownloadLocation;
 			private @Getter @Setter String EnableGpuDecoder;
 			private @Getter @Setter String HideSvsIcon;
 			private @Getter @Setter String InstallerLang;
@@ -70,12 +79,13 @@ public class LVMConfig extends YamlConfig {
 			private @Getter @Setter int ProxyPort;
 			private @Getter @Setter int ProxyType;
 			private @Getter @Setter String RememberPassword;
+			private @Getter @Setter String RunOnStartup;
 			private @Getter @Setter String SessionCookie;
 			private @Getter @Setter String ShowHwLabel;
 			private @Getter @Setter int Upgrader;
 			private @Getter @Setter String UseTestUpdateServer;
 			private @Getter @Setter String WinGeometry;
-			private @Getter @Setter int WinStates;			
+			private @Getter @Setter int WinStates;
 		}
 	}
 }
