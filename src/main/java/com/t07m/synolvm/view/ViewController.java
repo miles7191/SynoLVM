@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.t07m.application.Service;
 import com.t07m.synolvm.SynoLVM;
 import com.t07m.synolvm.config.LVMConfig.ViewConfig.RegistryConfig;
+import com.t07m.synolvm.handlers.ClientApplicationHandler;
 import com.t07m.synolvm.handlers.ClientDownloadHandler;
 import com.t07m.synolvm.handlers.RegistryHandler;
 import com.t07m.synolvm.system.ScreenReader;
@@ -75,29 +76,31 @@ public class ViewController extends Service<SynoLVM>{
 	private boolean lastLaunchCheck() {
 		if(lastLaunch != null) {
 			if(lastLaunch.getSurveillanceStationClient().isRunning()) {
-				if((lastLaunch.getWindowTitleWatcher() != null && !lastLaunch.getWindowTitleWatcher().validate()) ||
-						(lastLaunch.getWindowLocationWatcher() != null && !lastLaunch.getWindowLocationWatcher().validate())) {
-					if(ScreenReader.readLine("Loading") == null) {
-						String compat = ScreenReader.readLine("Compatible version");
-						if(compat != null) {
-							for(String ver : ClientDownloadHandler.getAvailableVersions()) {
-								if(compat.contains(ver)) {
-									lastLaunch.getViewConfig().setClientVersion(ver);
-									stopView(lastLaunch);
-									try {
-										app.getConfig().save();
-									} catch (InvalidConfigurationException e) {}
+				if(	(lastLaunch.getWindowLocationWatcher() != null && !lastLaunch.getWindowLocationWatcher().validate())) {
+					logger.debug("Waiting on LastLaunch");
+					if((lastLaunch.getWindowTitleWatcher() != null && !lastLaunch.getWindowTitleWatcher().validate())) {
+						if(ScreenReader.readLine("Loading") == null) {
+							String compat = ScreenReader.readLine("Compatible version");
+							if(compat != null) {
+								for(String ver : ClientDownloadHandler.getAvailableVersions()) {
+									if(compat.contains(ver)) {
+										lastLaunch.getViewConfig().setClientVersion(ver);
+										stopView(lastLaunch);
+										try {
+											app.getConfig().save();
+										} catch (InvalidConfigurationException e) {}
+									}
 								}
+							}else if(ScreenReader.readLine("The account or password is invalid") != null) {
+								stopView(lastLaunch);
+							}else if(ScreenReader.readLine("Unable to connect") != null) {
+								stopView(lastLaunch);
+							}else if(ScreenReader.readLine("Theservice is disabled now") != null) {
+								stopView(lastLaunch);
 							}
-						}else if(ScreenReader.readLine("The account or password is invalid") != null) {
-							stopView(lastLaunch);
-						}else if(ScreenReader.readLine("Unable to connect") != null) {
-							stopView(lastLaunch);
-						}else if(ScreenReader.readLine("Theservice is disabled now") != null) {
-							stopView(lastLaunch);
 						}
+						return false;
 					}
-					return false;
 				}
 			}
 		}
@@ -118,7 +121,7 @@ public class ViewController extends Service<SynoLVM>{
 		}
 		return true;
 	}
-	
+
 	private void stopView(View view) {
 		view.stop();
 		for(ViewMonitor vm : view.getViewWatchers()) {

@@ -30,6 +30,7 @@ import com.t07m.synolvm.view.monitors.WindowTitleMonitor;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.cubespace.Yamler.Config.InvalidConfigurationException;
 
 public class View {
 
@@ -69,6 +70,12 @@ public class View {
 					windowLocationWatcher = new WindowLocationMonitor(lvm, this);
 				if(windowTitleWatcher == null)
 					windowTitleWatcher = new WindowTitleMonitor(lvm, this);
+				if(viewConfig.getClientVersion() == null || viewConfig.getClientVersion().equals("")) {
+					viewConfig.setClientVersion(app.getVersion());
+					try {
+						lvm.getConfig().save();
+					} catch (InvalidConfigurationException e) {}
+				}
 			}
 		}
 		return valid = completed;

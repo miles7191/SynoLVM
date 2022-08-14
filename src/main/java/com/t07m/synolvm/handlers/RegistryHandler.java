@@ -130,6 +130,7 @@ public abstract class RegistryHandler {
 			if(setRecommendedValues) {
 				setRecommendedValues(registry);
 				trimLoginHistory(registry);
+				trimDownloadHistory(registry);
 			}
 			return true;
 		}
@@ -307,4 +308,9 @@ public abstract class RegistryHandler {
 		}
 		registry.setLoginHistory(history);
 	}
+	
+	public static void trimDownloadHistory(RegistryConfig registry) {
+		registry.setDownloadHistory("");
+	}
+
 }

@@ -26,8 +26,6 @@ import net.cubespace.Yamler.Config.YamlConfig;
 @ToString
 public class LVMConfig extends YamlConfig {
 
-	@Comment("Path To Synology Surveillance Station Executable")
-	private @Getter @Setter String SurveillanceStationPath = "C:\\Program Files\\Synology\\SynologySurveillanceStationClient\\bin\\SynologySurveillanceStationClient.exe";
 	private @Getter @Setter int LaunchGracePeriod = 30;
 	private @Getter @Setter ViewConfig[] ViewConfigurations = new ViewConfig[0];
 

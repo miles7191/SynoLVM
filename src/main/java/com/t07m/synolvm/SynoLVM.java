@@ -50,7 +50,7 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 
 public class SynoLVM extends Application{
 
-	public static final Version VERSION = Version.valueOf("1.1.1");
+	public static final Version VERSION = Version.valueOf("1.1.2");
 	
 	public static void main(String[] args) {
 		boolean gui = true;
